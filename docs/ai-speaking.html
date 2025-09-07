@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Speaking Coach (beta)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; max-width: 800px; margin: 32px auto; padding: 0 16px; }
+    h1 { margin-top: 0; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin: 12px 0; }
+    button { padding: 8px 14px; border-radius: 8px; border: 1px solid #999; background: #f6f6f6; cursor: pointer; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .small { color: #555; font-size: 0.9rem; }
+    .ok { color: #0a7f2e; }
+    .warn { color: #a15a00; }
+    .bad { color: #b00020; }
+    textarea { width: 100%; min-height: 80px; }
+    select { padding: 6px 8px; }
+    .score { font-weight: 700; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>AI Speaking Coach <span class="small">(Web Speech API, on‑device)</span></h1>
+  <p class="small">Practica inglés técnico con reconocimiento de voz del navegador (no se sube audio a servidores). Recomendado Chrome/Edge.</p>
+
+  <div class="card">
+    <label for="exercise">Ejercicio</label>
+    <select id="exercise"></select>
+    <div id="prompt" style="margin-top:8px; font-size:1.1rem;"></div>
+    <div class="row" style="margin-top:8px;">
+      <button id="speakBtn">▶️ Leer prompt (TTS)</button>
+      <button id="recBtn">🎙️ Grabar</button>
+      <button id="stopBtn" disabled>⏹️ Parar</button>
+    </div>
+    <div id="recog" class="small" style="margin-top:8px;"></div>
+    <div id="feedback" style="margin-top:8px;"></div>
+  </div>
+
+  <div class="card">
+    <h3>Consejos</h3>
+    <ul>
+      <li>Pronuncia claro y en voz alta. Evita ruidos.</li>
+      <li>Si el reconocimiento falla, intenta frases más lentas o repite.</li>
+      <li>Objetivo ≥ <b>85%</b> de coincidencia (score).</li>
+    </ul>
+  </div>
+
+<script>
+const EXERCISES = [
+  { id: "standup-1", prompt: "Yesterday I fixed a bug in the login flow. Today I will add unit tests. I am blocked by the database access." },
+  { id: "incident-1", prompt: "We rolled back the deployment because the health checks failed. We are investigating the root cause and monitoring the error rate." },
+  { id: "review-1", prompt: "Please refactor this function into smaller pure functions and add tests for edge cases." },
+];
+
+// Populate dropdown
+const sel = document.getElementById("exercise");
+EXERCISES.forEach(x => {
+  const o = document.createElement("option");
+  o.value = x.id; o.textContent = x.id;
+  sel.appendChild(o);
+});
+const promptDiv = document.getElementById("prompt");
+function renderPrompt() {
+  const cur = EXERCISES.find(x => x.id === sel.value) || EXERCISES[0];
+  promptDiv.textContent = cur.prompt;
+}
+sel.addEventListener("change", renderPrompt);
+sel.value = EXERCISES[0].id;
+renderPrompt();
+
+// Text-to-Speech
+document.getElementById("speakBtn").addEventListener("click", () => {
+  const utter = new SpeechSynthesisUtterance(promptDiv.textContent);
+  utter.lang = "en-US";
+  speechSynthesis.speak(utter);
+});
+
+// Speech Recognition (Webkit / standard)
+let recognition;
+let recognizing = false;
+let finalTranscript = "";
+const recogDiv = document.getElementById("recog");
+const feedbackDiv = document.getElementById("feedback");
+const recBtn = document.getElementById("recBtn");
+const stopBtn = document.getElementById("stopBtn");
+
+function supportsRecognition() {
+  return "webkitSpeechRecognition" in window || "SpeechRecognition" in window;
+}
+
+if (!supportsRecognition()) {
+  recBtn.disabled = true;
+  feedbackDiv.innerHTML = '<p class="bad">Tu navegador no soporta SpeechRecognition. Usa Chrome/Edge en desktop.</p>';
+} else {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = "en-US";
+  recognition.interimResults = true;
+  recognition.continuous = false;
+
+  recognition.onstart = () => {
+    recognizing = true;
+    finalTranscript = "";
+    recBtn.disabled = true; stopBtn.disabled = false;
+    recogDiv.textContent = "Escuchando...";
+  };
+  recognition.onresult = (event) => {
+    let interim = "";
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      const tr = event.results[i][0].transcript;
+      if (event.results[i].isFinal) finalTranscript += tr;
+      else interim += tr;
+    }
+    recogDiv.textContent = "Interim: " + interim + " | Final: " + finalTranscript;
+  };
+  recognition.onerror = (e) => { recogDiv.textContent = "Error: " + e.error; };
+  recognition.onend = () => {
+    recognizing = false;
+    recBtn.disabled = false; stopBtn.disabled = true;
+    grade();
+  };
+
+  recBtn.addEventListener("click", () => recognition.start());
+  stopBtn.addEventListener("click", () => recognition.stop());
+}
+
+function normalize(s) {
+  return s.toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+// Levenshtein distance for rough similarity
+function lev(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, () => new Array(n+1).fill(0));
+  for (let i=0;i<=m;i++) dp[i][0]=i;
+  for (let j=0;j<=n;j++) dp[0][j]=j;
+  for (let i=1;i<=m;i++) {
+    for (let j=1;j<=n;j++) {
+      const cost = a[i-1]===b[j-1]?0:1;
+      dp[i][j] = Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost);
+    }
+  }
+  return dp[m][n];
+}
+
+function grade() {
+  const target = normalize(promptDiv.textContent);
+  const said = normalize(finalTranscript);
+  if (!said) { feedbackDiv.innerHTML = '<p class="warn">No se capturó audio.</p>'; return; }
+  const dist = lev(said, target);
+  const maxLen = Math.max(said.length, target.length) || 1;
+  const score = Math.max(0, Math.round(100*(1 - dist/maxLen)));
+  let cls = "bad"; if (score >= 85) cls = "ok"; else if (score >= 70) cls = "warn";
+  feedbackDiv.innerHTML = `<p>Tu frase: <i>${said}</i></p>
+    <p>Score: <span class="score ${cls}">${score}%</span> (objetivo ≥ 85%)</p>`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz 1 — Fundamentos/DevOps/English</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; max-width: 800px; margin: 32px auto; padding: 0 16px; }
+    .q { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin: 12px 0; }
+    button { padding: 8px 14px; border-radius: 8px; border: 1px solid #999; background: #f6f6f6; cursor: pointer; }
+    .ok { color: #0a7f2e; } .bad { color: #b00020; }
+  </style>
+</head>
+<body>
+<h1>Quiz 1 — Fundamentos/DevOps/English</h1>
+<p>Corre 100% local/offline. No envía datos.</p>
+<div id="quiz"></div>
+<button id="finish">Calificar</button>
+<div id="result" style="margin-top:12px;"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    t: "¿Qué comando crea un nuevo repo Git?",
+    a: ["git start", "git init", "git new", "git create"],
+    c: 1
+  },
+  {
+    t: "En Docker, ¿qué expone puertos del contenedor al host?",
+    a: ["--env", "--volume", "--publish/-p", "--name"],
+    c: 2
+  },
+  {
+    t: "Traduce al inglés: 'Estoy bloqueado por un error de base de datos'",
+    a: ["I am block for a database error", "I am blocked by a database error", "I block because database error", "I am blocked for to database error"],
+    c: 1
+  }
+];
+const quizDiv = document.getElementById("quiz");
+QUESTIONS.forEach((q,i)=>{
+  const d = document.createElement("div");
+  d.className = "q";
+  d.innerHTML = `<p><b>Q${i+1}.</b> ${q.t}</p>` + q.a.map((opt,j)=>{
+    const id = `q${i}_a${j}`;
+    return `<div><label><input type="radio" name="q${i}" value="${j}"> ${opt}</label></div>`;
+  }).join("");
+  quizDiv.appendChild(d);
+});
+document.getElementById("finish").addEventListener("click", ()=>{
+  let ok = 0;
+  QUESTIONS.forEach((q,i)=>{
+    const sel = document.querySelector(`input[name="q${i}"]:checked`);
+    if (sel && +sel.value === q.c) ok++;
+  });
+  const pct = Math.round(100 * ok / QUESTIONS.length);
+  const cls = pct>=80 ? "ok" : "bad";
+  document.getElementById("result").innerHTML = `<p>Correctas: ${ok}/${QUESTIONS.length}. Score: <b class="${cls}">${pct}%</b></p>`;
+});
+</script>
+</body>
+</html>
