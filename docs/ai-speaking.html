@@ -156,5 +156,18 @@ function grade() {
     <p>Score: <span class="score ${cls}">${score}%</span> (objetivo ≥ 85%)</p>`;
 }
 </script>
+<textarea id="typed" placeholder="Escribí aquí lo que dirías..."></textarea>
+<button id="gradeTextBtn">✅ Calificar texto</button>
+<script>
+document.getElementById('gradeTextBtn').addEventListener('click', () => {
+  const target = normalize(promptDiv.textContent);
+  const said = normalize(document.getElementById('typed').value || "");
+  if (!said) { feedbackDiv.innerHTML = '<p class="warn">Escribí algo primero.</p>'; return; }
+  const dist = lev(said, target), maxLen = Math.max(said.length, target.length)||1;
+  const score = Math.max(0, Math.round(100*(1 - dist/maxLen)));
+  const cls = score>=85 ? "ok" : score>=70 ? "warn" : "bad";
+  feedbackDiv.innerHTML = `<p>Tu texto: <i>${said}</i></p><p>Score: <b class="score ${cls}">${score}%</b></p>`;
+});
+</script>
 </body>
 </html>
