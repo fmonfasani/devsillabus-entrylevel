@@ -2,6 +2,7 @@
 
 ---
 title: Dev • DevOps • English — Entry Level
+layout: none
 ---
 
 # DevSyllabus — Entry Level (Cohorte 01)
