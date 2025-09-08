@@ -1,3 +1,5 @@
+[AI Speaking](./ai-speaking.html) · [Quiz 1](./h5p/quiz1/) · [Módulo 1](./modulos/01-fundamentos.md) · [Intro video](./videos/intro.md)
+
 ---
 title: Dev • DevOps • English — Entry Level
 ---
