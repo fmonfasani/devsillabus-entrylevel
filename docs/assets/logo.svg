@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" fill="none">
+  <rect width="240" height="240" rx="24" fill="#111"/>
+  <g fill="#6EE7B7">
+    <path d="M60 170h40v10H60zM60 60h120v10H60z"/>
+    <circle cx="120" cy="120" r="48" fill="#6EE7B7" opacity=".2"/>
+    <path d="M90 120h60v10H90zM90 100h60v10H90zM90 140h40v10H90z"/>
+  </g>
+  <text x="50%" y="210" text-anchor="middle" fill="#6EE7B7" font-family="Arial" font-size="18">DevSyllabus</text>
+</svg>
