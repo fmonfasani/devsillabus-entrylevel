@@ -1,3 +1,15 @@
-title: DevSyllabus — Dev • DevOps • English
-description: Curso entry-level con videos, quizzes y labs
-theme: jekyll-theme-cayman
+remote_theme: just-the-docs/just-the-docs
+plugins:
+  - jekyll-remote-theme
+
+title: DevSyllabus — Entry Level
+description: Curso con videos, quizzes y labs
+logo: /assets/logo.png   # opcional
+color_scheme: light      # light|dark
+
+# Links de la barra superior
+nav_external_links:
+  - title: AI Speaking
+    url: /ai-speaking.html
+  - title: Quiz 1
+    url: /h5p/quiz1/
