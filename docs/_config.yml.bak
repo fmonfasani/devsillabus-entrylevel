@@ -1,0 +1,21 @@
+remote_theme: just-the-docs/just-the-docs
+plugins: [jekyll-remote-theme]
+
+title: DevSyllabus — Entry Level
+description: Curso con videos, quizzes y labs
+logo: /assets/logo.svg
+color_scheme: light
+
+# Unificación en collections
+collections_dir: collections
+collections:
+  fullstack:
+    output: true
+    permalink: /fullstack/:name/
+  devops:
+    output: true
+    permalink: /devops/:name/
+
+# Sidebar por data file (más claro)
+just_the_docs:
+  search_enabled: true
