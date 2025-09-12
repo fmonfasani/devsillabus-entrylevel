@@ -1,0 +1,15 @@
+{
+  "name": "fs-02-interactive",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/app.test.js",
+    "test:performance": "node --test test/performance.test.js",
+    "lint": "eslint src test"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "jsdom": "^24.0.0"
+  }
+}

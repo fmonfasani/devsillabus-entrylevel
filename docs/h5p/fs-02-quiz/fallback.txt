@@ -1,0 +1,13 @@
+Quiz FS-02 — Tipos, Funciones y DOM
+
+1. ¿Cuál es el tipo del valor null en JavaScript?
+   Respuesta correcta: object.
+
+2. ¿Cómo se define una función llamada sumar?
+   Respuesta correcta: function sumar() {}
+
+3. ¿Qué evento se dispara cuando un usuario escribe en un input?
+   Respuesta correcta: input.
+
+4. ¿Qué selector obtiene todos los elementos con clase "item"?
+   Respuesta correcta: document.querySelectorAll('.item')

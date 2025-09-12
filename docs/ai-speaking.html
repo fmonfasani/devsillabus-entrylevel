@@ -24,7 +24,10 @@
   <h1>AI Speaking Coach <span class="small">(Web Speech API, on‑device)</span></h1>
   <p class="small">Practica inglés técnico con reconocimiento de voz del navegador (no se sube audio a servidores). Recomendado Chrome/Edge.</p>
 
+
   <h2>Semana 0</h2>
+
+  <p class="small">Prompts sobre explicación de bugs, pasos de debugging y recomendaciones.</p>
 
   <div class="card">
     <label for="exercise">Ejercicio</label>
@@ -51,13 +54,40 @@
     </ul>
   </div>
 
+  <div class="card">
+    <h2>Semana 1</h2>
+    <p>Frases comunes:</p>
+    <ul>
+      <li>Revisión: "Please review the latest changes."</li>
+      <li>Grabación: "The meeting is being recorded."</li>
+      <li>Almacenamiento: "Store the backup in cloud storage."</li>
+    </ul>
+  </div>
+
+  <div class="card" id="metricsCard">
+    <h3>Métricas</h3>
+    <p>Palabras correctas: <span id="correctWords">0</span></p>
+    <p>Fluidez: <span id="fluency">0%</span></p>
+  </div>
+
 <script>
 const EXERCISES = [
+
   { id: "intro", prompt: "Introduce yourself to the team." },
   { id: "project", prompt: "Describe your current project." },
   { id: "skill", prompt: "Mention a technical skill you want to learn." },
   { id: "challenge", prompt: "Explain a recent challenge you faced." },
   { id: "help", prompt: "Ask for help with a task." },
+
+  { id: "standup-1", prompt: "Yesterday I fixed a bug in the login flow. Today I will add unit tests. I am blocked by the database access." },
+  { id: "incident-1", prompt: "We rolled back the deployment because the health checks failed. We are investigating the root cause and monitoring the error rate." },
+  { id: "review-1", prompt: "Please refactor this function into smaller pure functions and add tests for edge cases." },
+
+  { id: "review-common", prompt: "Please review the latest changes." },
+  { id: "recording-common", prompt: "The meeting is being recorded." },
+  { id: "storage-common", prompt: "Store the backup in cloud storage." },
+
+
 ];
 
 // Populate dropdown
@@ -68,6 +98,16 @@ EXERCISES.forEach(x => {
   sel.appendChild(o);
 });
 const promptDiv = document.getElementById("prompt");
+const cwSpan = document.getElementById('correctWords');
+const fluSpan = document.getElementById('fluency');
+
+function loadMetrics() {
+  const cw = localStorage.getItem('correctWords');
+  const flu = localStorage.getItem('fluency');
+  if (cw !== null) cwSpan.textContent = cw;
+  if (flu !== null) fluSpan.textContent = flu + '%';
+}
+
 function renderPrompt() {
   const cur = EXERCISES.find(x => x.id === sel.value) || EXERCISES[0];
   promptDiv.textContent = cur.prompt;
@@ -75,6 +115,7 @@ function renderPrompt() {
 sel.addEventListener("change", renderPrompt);
 sel.value = EXERCISES[0].id;
 renderPrompt();
+loadMetrics();
 
 // Text-to-Speech
 document.getElementById("speakBtn").addEventListener("click", () => {
@@ -195,16 +236,34 @@ function lev(a, b) {
   return dp[m][n];
 }
 
+function saveMetric(id, score) {
+  const metrics = JSON.parse(localStorage.getItem('metrics') || '{}');
+  const m = metrics[id] || { attempts: 0, best: 0 };
+  m.attempts++;
+  if (score > m.best) m.best = score;
+  metrics[id] = m;
+  localStorage.setItem('metrics', JSON.stringify(metrics));
+  return m;
+}
+
 function grade() {
+  const cur = EXERCISES.find(x => x.id === sel.value) || EXERCISES[0];
   const target = normalize(promptDiv.textContent);
   const said = normalize(finalTranscript);
   if (!said) { feedbackDiv.innerHTML = '<p class="warn">No se capturó audio.</p>'; return; }
   const dist = lev(said, target);
   const maxLen = Math.max(said.length, target.length) || 1;
   const score = Math.max(0, Math.round(100*(1 - dist/maxLen)));
+  const targetWords = target.split(' ');
+  const saidWords = said.split(' ');
+  const correct = targetWords.filter((w,i) => saidWords[i] === w).length;
+  const fluency = Math.round(100 * saidWords.length / (targetWords.length || 1));
   let cls = "bad"; if (score >= 85) cls = "ok"; else if (score >= 70) cls = "warn";
+  const m = saveMetric(cur.id, score);
   feedbackDiv.innerHTML = `<p>Tu frase: <i>${said}</i></p>
+
     <p>Score: <span class="score ${cls}">${score}%</span> (objetivo ≥ 85%)</p>`;
+
   currentResult = {
     id: sel.value,
     prompt: promptDiv.textContent,
@@ -225,6 +284,7 @@ function saveResult(res) {
   localStorage.setItem(key, JSON.stringify(all));
   if (window.onSemana0Result) window.onSemana0Result(res);
   window.dispatchEvent(new CustomEvent('semana0-result', { detail: res }));
+
 }
 
 saveFeedbackBtn.addEventListener("click", () => {
@@ -237,13 +297,24 @@ saveFeedbackBtn.addEventListener("click", () => {
 <button id="gradeTextBtn">✅ Calificar texto</button>
 <script>
 document.getElementById('gradeTextBtn').addEventListener('click', () => {
+  const cur = EXERCISES.find(x => x.id === sel.value) || EXERCISES[0];
   const target = normalize(promptDiv.textContent);
   const said = normalize(document.getElementById('typed').value || "");
   if (!said) { feedbackDiv.innerHTML = '<p class="warn">Escribí algo primero.</p>'; return; }
   const dist = lev(said, target), maxLen = Math.max(said.length, target.length)||1;
   const score = Math.max(0, Math.round(100*(1 - dist/maxLen)));
+  const targetWords = target.split(' ');
+  const saidWords = said.split(' ');
+  const correct = targetWords.filter((w,i) => saidWords[i] === w).length;
+  const fluency = Math.round(100 * saidWords.length / (targetWords.length || 1));
   const cls = score>=85 ? "ok" : score>=70 ? "warn" : "bad";
+
   feedbackDiv.innerHTML = `<p>Tu texto: <i>${said}</i></p><p>Score: <b class="score ${cls}">${score}%</b></p>`;
+  localStorage.setItem('correctWords', correct);
+  localStorage.setItem('fluency', fluency);
+  document.getElementById('correctWords').textContent = correct;
+  document.getElementById('fluency').textContent = fluency + '%';
+
 });
 </script>
 </body>
