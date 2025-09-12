@@ -1,7 +1,5 @@
 ---
 title: DEVOPS · Título del nivel
-nav_order: 10
-parent: DevOps
 ---
 ## Objetivo
 ## Proyecto

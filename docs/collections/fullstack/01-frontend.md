@@ -1,8 +1,6 @@
 ---
 title: "01 — Frontend"
 layout: default
-nav_order: 1
-parent: Fullstack
 ---
 
 # 01 — Frontend

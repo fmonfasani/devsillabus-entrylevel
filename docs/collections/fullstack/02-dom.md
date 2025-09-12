@@ -1,6 +1,5 @@
 ---
 title: 02 — DOM, eventos, accesibilidad y errores
-nav_order: 3
 ---
 # 02 — DOM, eventos, accesibilidad y manejo de errores
 
