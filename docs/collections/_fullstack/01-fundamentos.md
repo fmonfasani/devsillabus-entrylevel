@@ -1,3 +1,7 @@
+---
+redirect_from:
+  - /modulos/01-html-basico.html
+---
 # Módulo 01 — Fundamentos + Docker 101 + English: Standup
 
 ## Objetivos
