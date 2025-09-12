@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
+# docs/_config.yml
+=======
 ﻿# docs/_config.yml
+>>>>>>> 77aecfa06c16f9e87966b24f135f1c7ab4ba594c
 remote_theme: just-the-docs/just-the-docs
 
 plugins: [jekyll-remote-theme, jekyll-redirect-from]
