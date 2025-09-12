@@ -20,24 +20,24 @@ nav_order: 1
 {:toc}
 </details>
 
-## ��� Learning Objectives
+## 🎯 Learning Objectives
 - [ ] Set up your dev environment
 - [ ] Build a basic HTML page (semantic)
 - [ ] Style with CSS
 - [ ] Deploy to `yourname.devsyllabus.com`
 - [ ] Intro yourself in English (tech vocab)
 
-##  Video Lessons
-### 1) Welcome (15m)
+## 📺 Video Lessons
+### 1. Welcome (15m)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID_WEEK0_INTRO" title="Full Stack Week 0 - Introduction" frameborder="0" allowfullscreen></iframe>
 
-### 2) Dev Env (20m)
+### 2. Dev Env (20m)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID_SETUP" title="Development Environment Setup" frameborder="0" allowfullscreen></iframe>
 
-### 3) HTML (25m)
+### 3. HTML (25m)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID_HTML" title="HTML Fundamentals" frameborder="0" allowfullscreen></iframe>
 
-### 4) CSS (25m)
+### 4. CSS (25m)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID_CSS" title="CSS Basics" frameborder="0" allowfullscreen></iframe>
 
 ##  Quiz & Lab
