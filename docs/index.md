@@ -10,11 +10,11 @@ nav_order: 0
 ## Full-Stack
 
 - [Week 0: Setup & Your First Website](/fullstack/00-onboarding/)
-- [Week 1: Scratch: publicar tu primera web](/fullstack/00-scratch/)
-- [Week 2 — Setup & Your First Website ](/fullstack/00-setup/)
-- [01 — Frontend](/fullstack/01-frontend/)
-- [01-fundamentos](/fullstack/01-fundamentos/)
-- [02 — DOM, eventos, accesibilidad y errores](/fullstack/02-dom/)
+- [Week 1 — Setup & Your First Website ](/fullstack/01-setup/)
+- [Week 2: Fundamentals](/fullstack/02-fundamentals/)
+- [Week 3: DOM, eventos, accesibilidad y errores](/fullstack/03-dom/)
+- [Week 2: Scratch: publicar tu primera web](/fullstack/00-scratch/)
+- [Week 3: Frontend](/fullstack/01-frontend/)
 - [PLACEHOLDER — Full Stack](/fullstack/03-mid1/)
 - [PLACEHOLDER — Full Stack](/fullstack/04-mid2/)
 - [Full Stack](/fullstack/index/)
