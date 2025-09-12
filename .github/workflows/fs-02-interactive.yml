@@ -1,0 +1,28 @@
+name: fs-02-interactive CI
+
+on:
+  push:
+    paths:
+      - 'assignments-fullstack/fs-02-interactive/**'
+      - '.github/workflows/fs-02-interactive.yml'
+  pull_request:
+    paths:
+      - 'assignments-fullstack/fs-02-interactive/**'
+      - '.github/workflows/fs-02-interactive.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: assignments-fullstack/fs-02-interactive
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm test
+      - run: npm run lint
+      - run: npm audit --audit-level=high
+      - run: npm run test:performance
