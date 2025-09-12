@@ -1,0 +1,17 @@
+{
+  "name": "fs-01-landing",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint src tests",
+    "perf": "node tests/performance.test.js",
+    "audit": "npm audit --audit-level=moderate"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "jest-axe": "^7.0.0",
+    "jsdom": "^22.1.0"
+  }
+}
