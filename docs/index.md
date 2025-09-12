@@ -14,10 +14,9 @@ Bienvenid@. Abajo tenés el recorrido general.
 - [Semana 0 · Onboarding & First Website](/fullstack/00-onboarding/)
 - [00 — Scratch: publicar tu primera web](/fullstack/00-scratch/)
 - [01 — Frontend](/fullstack/01-frontend/)
-- [01-fundamentos](/fullstack/01-fundamentos/)
 - [02 — DOM, eventos, accesibilidad y errores](/fullstack/02-dom/)
-- [PLACEHOLDER — Full Stack](/fullstack/03-mid1/)
-- [PLACEHOLDER — Full Stack](/fullstack/04-mid2/)
+- [03 - PLACEHOLDER — Full Stack](/fullstack/03-mid1/)
+- [04 - PLACEHOLDER — Full Stack](/fullstack/04-mid2/)
 - [Full Stack](/fullstack/index/)
 
 
