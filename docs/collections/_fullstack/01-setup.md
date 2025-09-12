@@ -1,10 +1,16 @@
 ---
-title: "Week 0 — Setup & Your First Website ���"
+title: "Week 1: Setup & Your First Website"
 redirect_from:
   - /fullstack/01-setup.html
+
+layout: default
+
+parent: Full Stack Developer
+nav_order: 1
 ---
 
-# Week 0: Setup & Your First Website ���
+
+# Week 1: Setup & Your First Website 
 {: .no_toc }
 
 <details open markdown="block">
@@ -21,7 +27,7 @@ redirect_from:
 - [ ] Deploy to `yourname.devsyllabus.com`
 - [ ] Intro yourself in English (tech vocab)
 
-## ��� Video Lessons
+##  Video Lessons
 ### 1) Welcome (15m)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID_WEEK0_INTRO" title="Full Stack Week 0 - Introduction" frameborder="0" allowfullscreen></iframe>
 
@@ -34,6 +40,6 @@ redirect_from:
 ### 4) CSS (25m)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID_CSS" title="CSS Basics" frameborder="0" allowfullscreen></iframe>
 
-## ��� Quiz & Lab
+##  Quiz & Lab
 - Quiz 0 (H5P): [/h5p/fs-00-quiz/](/h5p/fs-00-quiz/)
 - Lab: Your First Website (deploy + README + short video intro)
