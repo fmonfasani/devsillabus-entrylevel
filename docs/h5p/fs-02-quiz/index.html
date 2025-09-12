@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz FS-02 — Tipos, Funciones y DOM</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; max-width: 800px; margin: 32px auto; padding: 0 16px; }
+    .q { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin: 12px 0; }
+    button { padding: 8px 14px; border-radius: 8px; border: 1px solid #999; background: #f6f6f6; cursor: pointer; }
+    .ok { color: #0a7f2e; } .bad { color: #b00020; }
+  </style>
+</head>
+<body>
+<h1>Quiz FS-02 — Tipos, Funciones y DOM</h1>
+<p>Corre 100% local/offline. No envía datos.</p>
+<noscript>
+  <p>Este quiz requiere JavaScript. <a href="fallback.txt">Versión accesible en texto.</a></p>
+</noscript>
+<div id="quiz"></div>
+<button id="finish">Calificar</button>
+<div id="result" style="margin-top:12px;"></div>
+
+<script>
+const QUESTIONS = [
+  {
+    t: "¿Cuál es el tipo del valor <code>null</code> en JavaScript?",
+    a: ["object", "null", "undefined", "number"],
+    c: 0
+  },
+  {
+    t: "¿Cómo se define una función llamada <code>sumar</code>?",
+    a: ["function:sumar() {}", "def sumar() {}", "function sumar() {}", "fn sumar() {}"],
+    c: 2
+  },
+  {
+    t: "¿Qué evento se dispara cuando un usuario escribe en un <code>input</code>?",
+    a: ["click", "submit", "input", "load"],
+    c: 2
+  },
+  {
+    t: "¿Qué selector obtiene todos los elementos con clase <code>item</code>?",
+    a: ["document.getElementById('item')", "document.querySelector('.item')", "document.querySelectorAll('.item')", "document.getElementsByTag('item')"],
+    c: 2
+  }
+];
+
+const quizDiv = document.getElementById("quiz");
+const stored = JSON.parse(localStorage.getItem('fs02_quiz_answers') || '{}');
+
+QUESTIONS.forEach((q,i)=>{
+  const d = document.createElement("div");
+  d.className = "q";
+  d.innerHTML = `<p><b>Q${i+1}.</b> ${q.t}</p>` + q.a.map((opt,j)=>{
+    const checked = stored[`q${i}`] == j ? 'checked' : '';
+    return `<div><label><input type=\"radio\" name=\"q${i}\" value=\"${j}\" ${checked}> ${opt}</label></div>`;
+  }).join("");
+  quizDiv.appendChild(d);
+});
+
+document.querySelectorAll('input[type="radio"]').forEach(inp=>{
+  inp.addEventListener('change', e=>{
+    const answers = JSON.parse(localStorage.getItem('fs02_quiz_answers') || '{}');
+    answers[e.target.name] = e.target.value;
+    localStorage.setItem('fs02_quiz_answers', JSON.stringify(answers));
+  });
+});
+
+document.getElementById("finish").addEventListener("click", ()=>{
+  let ok = 0;
+  QUESTIONS.forEach((q,i)=>{
+    const sel = document.querySelector(`input[name="q${i}"]:checked`);
+    if (sel && +sel.value === q.c) ok++;
+  });
+  const pct = Math.round(100 * ok / QUESTIONS.length);
+  const cls = pct>=80 ? "ok" : "bad";
+  document.getElementById("result").innerHTML = `<p>Correctas: ${ok}/${QUESTIONS.length}. Score: <b class=\"${cls}\">${pct}%</b></p>`;
+  localStorage.setItem('fs02_quiz_result', JSON.stringify({ok, total: QUESTIONS.length, pct, date: new Date().toISOString()}));
+});
+</script>
+</body>
+</html>
