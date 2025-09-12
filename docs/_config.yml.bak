@@ -6,7 +6,6 @@ description: Curso con videos, quizzes y labs
 logo: /assets/logo.svg
 color_scheme: light
 
-# Unificación en collections
 collections_dir: collections
 collections:
   fullstack:
@@ -16,6 +15,5 @@ collections:
     output: true
     permalink: /devops/:name/
 
-# Sidebar por data file (más claro)
 just_the_docs:
   search_enabled: true
