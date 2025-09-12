@@ -24,7 +24,9 @@
   <h1>AI Speaking Coach <span class="small">(Web Speech API, on‑device)</span></h1>
   <p class="small">Practica inglés técnico con reconocimiento de voz del navegador (no se sube audio a servidores). Recomendado Chrome/Edge.</p>
 
-  <h2>Semana 2</h2>
+
+  <h2>Semana 0</h2>
+
   <p class="small">Prompts sobre explicación de bugs, pasos de debugging y recomendaciones.</p>
 
   <div class="card">
@@ -35,9 +37,12 @@
       <button id="speakBtn">▶️ Leer prompt (TTS)</button>
       <button id="recBtn">🎙️ Grabar</button>
       <button id="stopBtn" disabled>⏹️ Parar</button>
+      <button id="playBtn" disabled>🔁 Reproducir</button>
     </div>
     <div id="recog" class="small" style="margin-top:8px;"></div>
     <div id="feedback" style="margin-top:8px;"></div>
+    <textarea id="feedbackText" placeholder="Escribe feedback u observaciones..."></textarea>
+    <button id="saveFeedbackBtn">💾 Guardar feedback</button>
   </div>
 
   <div class="card">
@@ -67,6 +72,13 @@
 
 <script>
 const EXERCISES = [
+
+  { id: "intro", prompt: "Introduce yourself to the team." },
+  { id: "project", prompt: "Describe your current project." },
+  { id: "skill", prompt: "Mention a technical skill you want to learn." },
+  { id: "challenge", prompt: "Explain a recent challenge you faced." },
+  { id: "help", prompt: "Ask for help with a task." },
+
   { id: "standup-1", prompt: "Yesterday I fixed a bug in the login flow. Today I will add unit tests. I am blocked by the database access." },
   { id: "incident-1", prompt: "We rolled back the deployment because the health checks failed. We are investigating the root cause and monitoring the error rate." },
   { id: "review-1", prompt: "Please refactor this function into smaller pure functions and add tests for edge cases." },
@@ -74,6 +86,7 @@ const EXERCISES = [
   { id: "review-common", prompt: "Please review the latest changes." },
   { id: "recording-common", prompt: "The meeting is being recorded." },
   { id: "storage-common", prompt: "Store the backup in cloud storage." },
+
 
 ];
 
@@ -119,6 +132,39 @@ const recogDiv = document.getElementById("recog");
 const feedbackDiv = document.getElementById("feedback");
 const recBtn = document.getElementById("recBtn");
 const stopBtn = document.getElementById("stopBtn");
+const playBtn = document.getElementById("playBtn");
+const feedbackText = document.getElementById("feedbackText");
+const saveFeedbackBtn = document.getElementById("saveFeedbackBtn");
+let currentAudioBase64 = null;
+let currentResult = null;
+let mediaRecorder;
+let audioChunks = [];
+let audioURL = null;
+navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+  mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(audioChunks, { type: "audio/webm" });
+    audioChunks = [];
+    audioURL = URL.createObjectURL(blob);
+    playBtn.disabled = false;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      currentAudioBase64 = reader.result;
+      if (currentResult) {
+        currentResult.audio = currentAudioBase64;
+        saveResult(currentResult);
+      }
+    };
+    reader.readAsDataURL(blob);
+  };
+}).catch(() => {
+  recBtn.disabled = true;
+  feedbackDiv.innerHTML = '<p class="bad">No se pudo acceder al micrófono.</p>';
+});
+playBtn.addEventListener("click", () => {
+  if (audioURL) new Audio(audioURL).play();
+});
 
 function supportsRecognition() {
   return "webkitSpeechRecognition" in window || "SpeechRecognition" in window;
@@ -138,6 +184,7 @@ if (!supportsRecognition()) {
     recognizing = true;
     finalTranscript = "";
     recBtn.disabled = true; stopBtn.disabled = false;
+    playBtn.disabled = true;
     recogDiv.textContent = "Escuchando...";
   };
   recognition.onresult = (event) => {
@@ -156,8 +203,18 @@ if (!supportsRecognition()) {
     grade();
   };
 
-  recBtn.addEventListener("click", () => recognition.start());
-  stopBtn.addEventListener("click", () => recognition.stop());
+  recBtn.addEventListener("click", () => {
+    if (mediaRecorder) {
+      audioURL = null;
+      currentAudioBase64 = null;
+      mediaRecorder.start();
+    }
+    recognition.start();
+  });
+  stopBtn.addEventListener("click", () => {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+    recognition.stop();
+  });
 }
 
 function normalize(s) {
@@ -206,12 +263,35 @@ function grade() {
   feedbackDiv.innerHTML = `<p>Tu frase: <i>${said}</i></p>
 
     <p>Score: <span class="score ${cls}">${score}%</span> (objetivo ≥ 85%)</p>`;
-  localStorage.setItem('correctWords', correct);
-  localStorage.setItem('fluency', fluency);
-  document.getElementById('correctWords').textContent = correct;
-  document.getElementById('fluency').textContent = fluency + '%';
+
+  currentResult = {
+    id: sel.value,
+    prompt: promptDiv.textContent,
+    transcript: said,
+    score,
+    audio: currentAudioBase64,
+    feedback: feedbackText.value,
+    ts: Date.now()
+  };
+  saveResult(currentResult);
+}
+
+function saveResult(res) {
+  const key = 'semana0';
+  const all = JSON.parse(localStorage.getItem(key) || '[]');
+  const idx = all.findIndex(r => r.id === res.id && r.ts === res.ts);
+  if (idx >= 0) all[idx] = res; else all.push(res);
+  localStorage.setItem(key, JSON.stringify(all));
+  if (window.onSemana0Result) window.onSemana0Result(res);
+  window.dispatchEvent(new CustomEvent('semana0-result', { detail: res }));
 
 }
+
+saveFeedbackBtn.addEventListener("click", () => {
+  if (!currentResult) return;
+  currentResult.feedback = feedbackText.value;
+  saveResult(currentResult);
+});
 </script>
 <textarea id="typed" placeholder="Escribí aquí lo que dirías..."></textarea>
 <button id="gradeTextBtn">✅ Calificar texto</button>
