@@ -1,4 +1,7 @@
 ---
+redirect_from:
+  - /modulos/00-scratch.html
+
 layout: default
 title: "Week 0: Setup & Your First Website"
 parent: Full Stack Developer
