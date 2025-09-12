@@ -1,3 +1,6 @@
+---
+nav_exclude: true
+---
 # Video 1 — Intro
 
 > Sube tu video a **YouTube (No listado)** y reemplaza el `VIDEO_ID` abajo.
