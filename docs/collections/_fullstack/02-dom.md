@@ -1,10 +1,6 @@
 ---
 redirect_from:
   - /modulos/02-dom.html
-<<<<<<< HEAD
-=======
-
->>>>>>> 77aecfa06c16f9e87966b24f135f1c7ab4ba594c
 title: 02 — DOM, eventos, accesibilidad y errores
 ---
 # 02 — DOM, eventos, accesibilidad y manejo de errores
