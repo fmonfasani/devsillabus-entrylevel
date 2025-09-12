@@ -1,5 +1,5 @@
 # docs/_data/navigation.yml
-- title: Dev · DevOps · English — Entry Level
+- title: Dev · DevOps · English Entry Level
   children:
     - title: Full Stack
       children:
