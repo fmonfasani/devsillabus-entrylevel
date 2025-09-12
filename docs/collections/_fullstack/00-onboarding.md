@@ -1,6 +1,6 @@
 ---
 redirect_from:
-  - /modulos/00-scratch.html
+  - /fullstack/00-onboarding.html
 
 layout: default
 title: "Week 0: Setup & Your First Website"
@@ -74,3 +74,48 @@ By the end of this week, you will be able to:
 ### What is Full Stack Development?
 
 A **Full Stack Developer** builds both the **frontend** (what users see) and **backend** (server logic) of web applications.
+
+Frontend (Client-Side)          Backend (Server-Side)
+┌─────────────────────┐        ┌─────────────────────┐
+│   HTML Structure    │        │   Server Logic      │
+│   CSS Styling       │   ←→   │   Database          │
+│   JavaScript Logic  │        │   APIs              │
+└─────────────────────┘        └─────────────────────┘
+
+### Essential Tools
+
+| Tool | Purpose | Why We Use It |
+|------|---------|---------------|
+| **VS Code** | Code Editor | Free, powerful, lots of extensions |
+| **Git** | Version Control | Track changes, collaborate |
+| **GitHub** | Code Hosting | Share code, deploy websites |
+| **Chrome DevTools** | Debugging | Inspect and fix code |
+
+### HTML Fundamentals
+
+HTML (HyperText Markup Language) is the **structure** of web pages.
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My First Website</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Website</h1>
+    </header>
+    
+    <main>
+        <section>
+            <h2>About Me</h2>
+            <p>I'm learning to code with DevSyllabus!</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 My Name</p>
+    </footer>
+</body>
+</html>
