@@ -1,8 +1,10 @@
-﻿remote_theme: just-the-docs/just-the-docs
+
+﻿# docs/_config.yml
+remote_theme: just-the-docs/just-the-docs
+
 plugins: [jekyll-remote-theme, jekyll-redirect-from]
 
 title: DevSyllabus — Entry Level
-description: Curso con videos, quizzes y labs
 logo: /assets/logo.svg
 color_scheme: light
 

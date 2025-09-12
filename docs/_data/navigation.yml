@@ -1,3 +1,4 @@
+# docs/_data/navigation.yml
 - title: Dev · DevOps · English — Entry Level
   children:
     - title: Full Stack
@@ -6,8 +7,12 @@
           url: /fullstack/00-scratch/
         - title: L1 · Fundamentos
           url: /fullstack/01-fundamentos/
-        - title: L2 · DOM y eventos
+        - title: L2 · DOM
           url: /fullstack/02-dom/
+        - title: L3 · Mid 1
+          url: /fullstack/03-mid1/
+        - title: L4 · Mid 2
+          url: /fullstack/04-mid2/
     - title: DevOps
       children:
         - title: L0 · Scratch
@@ -22,11 +27,11 @@
           url: /devops/l4-pro/
     - title: Quizzes (H5P)
       children:
-        - title: FS-00 Quiz
+        - title: FS-00
           url: /h5p/fs-00-quiz/
-        - title: FS-01 Quiz
+        - title: FS-01
           url: /h5p/fs-01-quiz/
-        - title: FS-02 Quiz
+        - title: FS-02
           url: /h5p/fs-02-quiz/
-    - title: Mi primera web (HTML)
+    - title: Mi primera web
       url: /public/
