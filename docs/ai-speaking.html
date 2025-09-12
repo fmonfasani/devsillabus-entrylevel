@@ -46,11 +46,30 @@
     </ul>
   </div>
 
+  <div class="card">
+    <h2>Semana 1</h2>
+    <p>Frases comunes:</p>
+    <ul>
+      <li>Revisión: "Please review the latest changes."</li>
+      <li>Grabación: "The meeting is being recorded."</li>
+      <li>Almacenamiento: "Store the backup in cloud storage."</li>
+    </ul>
+  </div>
+
+  <div class="card" id="metricsCard">
+    <h3>Métricas</h3>
+    <p>Palabras correctas: <span id="correctWords">0</span></p>
+    <p>Fluidez: <span id="fluency">0%</span></p>
+  </div>
+
 <script>
 const EXERCISES = [
   { id: "standup-1", prompt: "Yesterday I fixed a bug in the login flow. Today I will add unit tests. I am blocked by the database access." },
   { id: "incident-1", prompt: "We rolled back the deployment because the health checks failed. We are investigating the root cause and monitoring the error rate." },
   { id: "review-1", prompt: "Please refactor this function into smaller pure functions and add tests for edge cases." },
+  { id: "review-common", prompt: "Please review the latest changes." },
+  { id: "recording-common", prompt: "The meeting is being recorded." },
+  { id: "storage-common", prompt: "Store the backup in cloud storage." },
 ];
 
 // Populate dropdown
@@ -61,6 +80,16 @@ EXERCISES.forEach(x => {
   sel.appendChild(o);
 });
 const promptDiv = document.getElementById("prompt");
+const cwSpan = document.getElementById('correctWords');
+const fluSpan = document.getElementById('fluency');
+
+function loadMetrics() {
+  const cw = localStorage.getItem('correctWords');
+  const flu = localStorage.getItem('fluency');
+  if (cw !== null) cwSpan.textContent = cw;
+  if (flu !== null) fluSpan.textContent = flu + '%';
+}
+
 function renderPrompt() {
   const cur = EXERCISES.find(x => x.id === sel.value) || EXERCISES[0];
   promptDiv.textContent = cur.prompt;
@@ -68,6 +97,7 @@ function renderPrompt() {
 sel.addEventListener("change", renderPrompt);
 sel.value = EXERCISES[0].id;
 renderPrompt();
+loadMetrics();
 
 // Text-to-Speech
 document.getElementById("speakBtn").addEventListener("click", () => {
@@ -151,9 +181,17 @@ function grade() {
   const dist = lev(said, target);
   const maxLen = Math.max(said.length, target.length) || 1;
   const score = Math.max(0, Math.round(100*(1 - dist/maxLen)));
+  const targetWords = target.split(' ');
+  const saidWords = said.split(' ');
+  const correct = targetWords.filter((w,i) => saidWords[i] === w).length;
+  const fluency = Math.round(100 * saidWords.length / (targetWords.length || 1));
   let cls = "bad"; if (score >= 85) cls = "ok"; else if (score >= 70) cls = "warn";
   feedbackDiv.innerHTML = `<p>Tu frase: <i>${said}</i></p>
     <p>Score: <span class="score ${cls}">${score}%</span> (objetivo ≥ 85%)</p>`;
+  localStorage.setItem('correctWords', correct);
+  localStorage.setItem('fluency', fluency);
+  document.getElementById('correctWords').textContent = correct;
+  document.getElementById('fluency').textContent = fluency + '%';
 }
 </script>
 <textarea id="typed" placeholder="Escribí aquí lo que dirías..."></textarea>
@@ -165,8 +203,16 @@ document.getElementById('gradeTextBtn').addEventListener('click', () => {
   if (!said) { feedbackDiv.innerHTML = '<p class="warn">Escribí algo primero.</p>'; return; }
   const dist = lev(said, target), maxLen = Math.max(said.length, target.length)||1;
   const score = Math.max(0, Math.round(100*(1 - dist/maxLen)));
+  const targetWords = target.split(' ');
+  const saidWords = said.split(' ');
+  const correct = targetWords.filter((w,i) => saidWords[i] === w).length;
+  const fluency = Math.round(100 * saidWords.length / (targetWords.length || 1));
   const cls = score>=85 ? "ok" : score>=70 ? "warn" : "bad";
   feedbackDiv.innerHTML = `<p>Tu texto: <i>${said}</i></p><p>Score: <b class="score ${cls}">${score}%</b></p>`;
+  localStorage.setItem('correctWords', correct);
+  localStorage.setItem('fluency', fluency);
+  document.getElementById('correctWords').textContent = correct;
+  document.getElementById('fluency').textContent = fluency + '%';
 });
 </script>
 </body>
