@@ -1,5 +1,7 @@
+
 ﻿# docs/_config.yml
 remote_theme: just-the-docs/just-the-docs
+
 plugins: [jekyll-remote-theme, jekyll-redirect-from]
 
 title: DevSyllabus — Entry Level

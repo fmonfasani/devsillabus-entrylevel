@@ -1,8 +1,7 @@
 ---
 redirect_from:
   - /modulos/00-scratch.html
----
----
+
 title: 00 — Scratch: publicar tu primera web
 ---
 # 00 — Scratch: publicar tu primera web
