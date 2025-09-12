@@ -15,3 +15,5 @@ nav_external_links:
     url: /modulos/02-dom.html
   - title: Roadmap
     url: /modulos/00-scratch.html
+  - title: Full Stack
+    url: /fullstack/00-onboarding.html
