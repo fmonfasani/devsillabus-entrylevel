@@ -1,15 +1,15 @@
 remote_theme: just-the-docs/just-the-docs
-plugins:
-  - jekyll-remote-theme
+plugins: [jekyll-remote-theme]
 
 title: DevSyllabus — Entry Level
 description: Curso con videos, quizzes y labs
-logo: /assets/logo.png   # opcional
-color_scheme: light      # light|dark
+logo: /assets/logo.svg
+color_scheme: light
 
-# Links de la barra superior
 nav_external_links:
-  - title: AI Speaking
-    url: /ai-speaking.html
-  - title: Quiz 1
-    url: /h5p/quiz1/
+  - title: Mi primera web (HTML)
+    url: /public/
+  - title: Módulo 01
+    url: /modulos/01-html-basico.html
+  - title: Roadmap
+    url: /modulos/00-scratch.html
