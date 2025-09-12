@@ -1,8 +1,6 @@
 ---
 layout: default
 title: "Semana 0 · Onboarding & First Website"
-parent: "Full Stack"
-nav_order: 0
 ---
 
 # Semana 0 · Onboarding & First Website

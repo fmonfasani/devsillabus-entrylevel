@@ -1,6 +1,5 @@
 ---
 title: 00 — Scratch: publicar tu primera web
-nav_order: 1
 ---
 # 00 — Scratch: publicar tu primera web
 
