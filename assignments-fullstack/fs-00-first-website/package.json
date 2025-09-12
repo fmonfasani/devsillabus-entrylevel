@@ -1,0 +1,16 @@
+{
+  "name": "fs-00-first-website",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "http-server ./src -a localhost -p 3000 -o",
+    "build": "echo 'build step'",
+    "test": "node --test tests",
+    "lint": "eslint .",
+    "audit": "npm audit"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "http-server": "^14.1.1"
+  }
+}
