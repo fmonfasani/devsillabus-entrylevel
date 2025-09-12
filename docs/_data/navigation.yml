@@ -1,0 +1,32 @@
+- title: Dev · DevOps · English — Entry Level
+  children:
+    - title: Full Stack
+      children:
+        - title: L0 · Scratch
+          url: /fullstack/00-scratch/
+        - title: L1 · Fundamentos
+          url: /fullstack/01-fundamentos/
+        - title: L2 · DOM y eventos
+          url: /fullstack/02-dom/
+    - title: DevOps
+      children:
+        - title: L0 · Scratch
+          url: /devops/l0-scratch/
+        - title: L1 · Starter
+          url: /devops/l1-starter/
+        - title: L2 · Builder
+          url: /devops/l2-builder/
+        - title: L3 · Advanced
+          url: /devops/l3-advanced/
+        - title: L4 · Pro
+          url: /devops/l4-pro/
+    - title: Quizzes (H5P)
+      children:
+        - title: FS-00 Quiz
+          url: /h5p/fs-00-quiz/
+        - title: FS-01 Quiz
+          url: /h5p/fs-01-quiz/
+        - title: FS-02 Quiz
+          url: /h5p/fs-02-quiz/
+    - title: Mi primera web (HTML)
+      url: /public/
