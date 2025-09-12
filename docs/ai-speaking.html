@@ -24,6 +24,9 @@
   <h1>AI Speaking Coach <span class="small">(Web Speech API, on‑device)</span></h1>
   <p class="small">Practica inglés técnico con reconocimiento de voz del navegador (no se sube audio a servidores). Recomendado Chrome/Edge.</p>
 
+  <h2>Semana 2</h2>
+  <p class="small">Prompts sobre explicación de bugs, pasos de debugging y recomendaciones.</p>
+
   <div class="card">
     <label for="exercise">Ejercicio</label>
     <select id="exercise"></select>
@@ -51,6 +54,9 @@ const EXERCISES = [
   { id: "standup-1", prompt: "Yesterday I fixed a bug in the login flow. Today I will add unit tests. I am blocked by the database access." },
   { id: "incident-1", prompt: "We rolled back the deployment because the health checks failed. We are investigating the root cause and monitoring the error rate." },
   { id: "review-1", prompt: "Please refactor this function into smaller pure functions and add tests for edge cases." },
+  { id: "bug-2", prompt: "The upload service crashes because the file path is undefined and causes a null pointer exception." },
+  { id: "debug-2", prompt: "First I reproduce the bug, inspect the logs, add breakpoints, and test each module to find the issue." },
+  { id: "recommend-2", prompt: "I recommend adding validation, writing regression tests, and monitoring errors after deployment." },
 ];
 
 // Populate dropdown
@@ -144,7 +150,18 @@ function lev(a, b) {
   return dp[m][n];
 }
 
+function saveMetric(id, score) {
+  const metrics = JSON.parse(localStorage.getItem('metrics') || '{}');
+  const m = metrics[id] || { attempts: 0, best: 0 };
+  m.attempts++;
+  if (score > m.best) m.best = score;
+  metrics[id] = m;
+  localStorage.setItem('metrics', JSON.stringify(metrics));
+  return m;
+}
+
 function grade() {
+  const cur = EXERCISES.find(x => x.id === sel.value) || EXERCISES[0];
   const target = normalize(promptDiv.textContent);
   const said = normalize(finalTranscript);
   if (!said) { feedbackDiv.innerHTML = '<p class="warn">No se capturó audio.</p>'; return; }
@@ -152,21 +169,25 @@ function grade() {
   const maxLen = Math.max(said.length, target.length) || 1;
   const score = Math.max(0, Math.round(100*(1 - dist/maxLen)));
   let cls = "bad"; if (score >= 85) cls = "ok"; else if (score >= 70) cls = "warn";
+  const m = saveMetric(cur.id, score);
   feedbackDiv.innerHTML = `<p>Tu frase: <i>${said}</i></p>
-    <p>Score: <span class="score ${cls}">${score}%</span> (objetivo ≥ 85%)</p>`;
+    <p>Score: <span class="score ${cls}">${score}%</span> (objetivo ≥ 85%)</p>
+    <p class="small">Intentos: ${m.attempts} | Mejor: ${m.best}%</p>`;
 }
 </script>
 <textarea id="typed" placeholder="Escribí aquí lo que dirías..."></textarea>
 <button id="gradeTextBtn">✅ Calificar texto</button>
 <script>
 document.getElementById('gradeTextBtn').addEventListener('click', () => {
+  const cur = EXERCISES.find(x => x.id === sel.value) || EXERCISES[0];
   const target = normalize(promptDiv.textContent);
   const said = normalize(document.getElementById('typed').value || "");
   if (!said) { feedbackDiv.innerHTML = '<p class="warn">Escribí algo primero.</p>'; return; }
   const dist = lev(said, target), maxLen = Math.max(said.length, target.length)||1;
   const score = Math.max(0, Math.round(100*(1 - dist/maxLen)));
   const cls = score>=85 ? "ok" : score>=70 ? "warn" : "bad";
-  feedbackDiv.innerHTML = `<p>Tu texto: <i>${said}</i></p><p>Score: <b class="score ${cls}">${score}%</b></p>`;
+  const m = saveMetric(cur.id, score);
+  feedbackDiv.innerHTML = `<p>Tu texto: <i>${said}</i></p><p>Score: <b class="score ${cls}">${score}%</b></p><p class="small">Intentos: ${m.attempts} | Mejor: ${m.best}%</p>`;
 });
 </script>
 </body>
