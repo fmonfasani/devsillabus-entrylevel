@@ -1,6 +1,5 @@
+
 'use client';
-
-
 import React, { useEffect, useState } from 'react';
 import CourseCard from './CourseCard';
 import ChapterList from './ChapterList';
@@ -235,4 +234,3 @@ const CourseDashboard: React.FC = () => {
 };
 
 export default CourseDashboard;
-

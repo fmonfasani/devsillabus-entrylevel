@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcryptjs';
 import { config as env } from 'dotenv';
 
+
 env({ path: '.env' });
 
 // Cast PrismaClient to any to avoid type errors if types are out of sync
@@ -40,6 +41,7 @@ async function upsertChapterProgress(data: any) {
   return prisma.chapterProgress.create({ data });
 }
 
+
 async function main() {
   console.log('🌱 Starting seed process...');
 
@@ -61,6 +63,7 @@ async function main() {
       passwordHash,
       role: 'ADMIN'
     } as any
+
 
   });
   console.log('✅ Admin user created/updated');
