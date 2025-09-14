@@ -1,2 +1,25 @@
-course-site-starter/
-/node_modules
+# Node
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+.next-cache/
+
+# Env & DB
+.env
+.env.*
+!.env.example
+prisma/dev.db
+
+# Build / test
+dist/
+coverage/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
