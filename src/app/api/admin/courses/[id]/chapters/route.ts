@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
 
-const db = prisma as any;
 
 export async function GET(
   request: NextRequest,
