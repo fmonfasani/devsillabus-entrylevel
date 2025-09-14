@@ -5,8 +5,8 @@ pnpm-debug.log*
 
 # Next.js
 .next/
-out/
 .next-cache/
+out/
 
 # Env & DB
 .env
@@ -14,12 +14,11 @@ out/
 !.env.example
 prisma/dev.db
 
-# Build / test
+# Build/test
 dist/
 coverage/
 
-# OS / editor
+# OS/Editor
 .DS_Store
 .vscode/
 .idea/
-*.swp

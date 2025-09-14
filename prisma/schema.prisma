@@ -1,3 +1,4 @@
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,10 +8,174 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum CourseType {
+  FULLSTACK
+  DEVOPS
+}
+
+enum CourseLevel {
+  ENTRY_LEVEL
+  BOOTCAMP
+  MID_LEVEL
+  SENIOR
+}
+
+enum ProgressStatus {
+  LOCKED
+  AVAILABLE
+  IN_PROGRESS
+  COMPLETED
+}
+
 model User {
   id           Int      @id @default(autoincrement())
   email        String   @unique
   name         String?
   passwordHash String
-  createdAt    DateTime @default(now())
+  role         String   @default("STUDENT") // ADMIN, INSTRUCTOR, STUDENT
+  createdAt    DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  enrollments        Enrollment[]
+  chapterProgress    ChapterProgress[]
+  assessmentAttempts AssessmentAttempt[]
+
+  @@map("User")
+}
+
+model Course {
+  id             Int         @id @default(autoincrement())
+  name           String
+  slug           String      @unique
+  description    String?
+  type           CourseType
+  level          CourseLevel
+  durationWeeks  Int         @map("duration_weeks")
+  startDate      DateTime?   @map("start_date")
+  endDate        DateTime?   @map("end_date")
+  isActive       Boolean     @default(true) @map("is_active")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  
+  // Relations
+  chapters    Chapter[]
+  enrollments Enrollment[]
+
+  @@map("Course")
+}
+
+model Chapter {
+  id                     Int      @id @default(autoincrement())
+  courseId               Int      @map("course_id")
+  weekNumber             Int      @map("week_number")
+  title                  String
+  description            String?
+  unlockDate             DateTime? @map("unlock_date")
+  theoreticalContent     String?  @map("theoretical_content")
+  practicalRequirements  String?  @map("practical_requirements")
+  minScoreTheory         Int      @default(80) @map("min_score_theory")
+  minScorePractice       Int      @default(80) @map("min_score_practice")
+  isPublished            Boolean  @default(false) @map("is_published")
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  course             Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  resources          ChapterResource[]
+  progress           ChapterProgress[]
+  assessments        Assessment[]
+
+  @@index([courseId, weekNumber])
+  @@map("Chapter")
+}
+
+model ChapterResource {
+  id          Int      @id @default(autoincrement())
+  chapterId   Int      @map("chapter_id")
+  type        String   // VIDEO, DOCUMENT, QUIZ, LAB, EXTERNAL_LINK
+  title       String
+  url         String?
+  content     String?
+  orderIndex  Int      @default(0) @map("order_index")
+  isRequired  Boolean  @default(false) @map("is_required")
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@index([chapterId, orderIndex])
+  @@map("ChapterResource")
+}
+
+model Enrollment {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @map("user_id")
+  courseId    Int       @map("course_id")
+  enrolledAt  DateTime  @default(now()) @map("enrolled_at")
+  completedAt DateTime? @map("completed_at")
+  isActive    Boolean   @default(true) @map("is_active")
+  
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("Enrollment")
+}
+
+model ChapterProgress {
+  id            Int            @id @default(autoincrement())
+  userId        Int            @map("user_id")
+  chapterId     Int            @map("chapter_id")
+  status        ProgressStatus @default(LOCKED)
+  theoryScore   Int?           @map("theory_score")
+  practiceScore Int?           @map("practice_score")
+  startedAt     DateTime?      @map("started_at")
+  completedAt   DateTime?      @map("completed_at")
+  lastAccessed  DateTime?      @map("last_accessed")
+  
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId])
+  @@index([userId])
+  @@map("ChapterProgress")
+}
+
+model Assessment {
+  id               Int      @id @default(autoincrement())
+  chapterId        Int      @map("chapter_id")
+  type             String   // QUIZ, LAB, PROJECT
+  title            String
+  instructions     String?
+  maxAttempts      Int?     @default(3) @map("max_attempts")
+  timeLimitMinutes Int?     @map("time_limit_minutes")
+  passingScore     Int      @default(80) @map("passing_score")
+  isActive         Boolean  @default(true) @map("is_active")
+  createdAt        DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  chapter  Chapter             @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  attempts AssessmentAttempt[]
+
+  @@map("Assessment")
+}
+
+model AssessmentAttempt {
+  id             Int       @id @default(autoincrement())
+  userId         Int       @map("user_id")
+  assessmentId   Int       @map("assessment_id")
+  score          Int?
+  answers        Json?
+  startedAt      DateTime  @default(now()) @map("started_at")
+  submittedAt    DateTime? @map("submitted_at")
+  attemptNumber  Int       @default(1) @map("attempt_number")
+  
+  // Relations
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@index([userId, assessmentId])
+  @@map("AssessmentAttempt")
 }
