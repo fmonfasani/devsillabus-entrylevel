@@ -1,9 +1,8 @@
 ---
 redirect_from:
   - /fullstack/00-onboarding.html
-
 layout: default
-title: "Week 0: Setup & Your First Website"
+title: "Week 0: Setup & Your First Website 1"
 parent: Full Stack Developer
 nav_order: 1
 ---
