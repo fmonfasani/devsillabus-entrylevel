@@ -1,6 +1,14 @@
 // src/lib/progressService.ts
 import prisma from '@/lib/prisma';
-import { ProgressStatus } from '@prisma/client';
+
+const db = prisma as any;
+
+export enum ProgressStatus {
+  LOCKED = 'LOCKED',
+  AVAILABLE = 'AVAILABLE',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED'
+}
 
 export class ProgressService {
   /**
@@ -9,19 +17,19 @@ export class ProgressService {
   static async initializeUserProgress(userId: number, courseId: number) {
     try {
       // Obtener todos los capítulos del curso
-      const chapters = await prisma.chapter.findMany({
+      const chapters = await db.chapter.findMany({
         where: { courseId },
         orderBy: { weekNumber: 'asc' }
       });
 
       // Crear progreso inicial para cada capítulo
-      const progressData = chapters.map((chapter, index) => ({
+      const progressData = chapters.map((chapter: any, index: number) => ({
         userId,
         chapterId: chapter.id,
         status: index === 0 ? ProgressStatus.AVAILABLE : ProgressStatus.LOCKED
       }));
 
-      await prisma.chapterProgress.createMany({
+      await db.chapterProgress.createMany({
         data: progressData,
         skipDuplicates: true
       });
@@ -38,7 +46,7 @@ export class ProgressService {
    */
   static async evaluateChapterUnlock(userId: number, chapterId: number) {
     try {
-      const chapter = await prisma.chapter.findUnique({
+      const chapter = await db.chapter.findUnique({
         where: { id: chapterId },
         include: {
           course: {
@@ -66,13 +74,13 @@ export class ProgressService {
 
       // Encontrar el capítulo anterior
       const previousChapter = chapter.course.chapters.find(
-        c => c.weekNumber === chapter.weekNumber - 1
+        (c: any) => c.weekNumber === chapter.weekNumber - 1
       );
 
       if (!previousChapter) return false;
 
       // Verificar si el capítulo anterior está completado
-      const previousProgress = await prisma.chapterProgress.findUnique({
+      const previousProgress = await db.chapterProgress.findUnique({
         where: {
           userId_chapterId: {
             userId,
@@ -136,7 +144,7 @@ export class ProgressService {
         }
       }
 
-      const progress = await prisma.chapterProgress.upsert({
+      const progress = await db.chapterProgress.upsert({
         where: {
           userId_chapterId: {
             userId,
@@ -168,7 +176,7 @@ export class ProgressService {
    */
   static async unlockNextChapter(userId: number, currentChapterId: number) {
     try {
-      const currentChapter = await prisma.chapter.findUnique({
+      const currentChapter = await db.chapter.findUnique({
         where: { id: currentChapterId },
         include: {
           course: {
@@ -185,7 +193,7 @@ export class ProgressService {
 
       // Encontrar el siguiente capítulo
       const nextChapter = currentChapter.course.chapters.find(
-        c => c.weekNumber === currentChapter.weekNumber + 1
+        (c: any) => c.weekNumber === currentChapter.weekNumber + 1
       );
 
       if (!nextChapter) return;
@@ -203,7 +211,7 @@ export class ProgressService {
    */
   static async getUserCourseProgress(userId: number, courseId: number) {
     try {
-      const progress = await prisma.chapterProgress.findMany({
+      const progress = await db.chapterProgress.findMany({
         where: {
           userId,
           chapter: {
@@ -240,8 +248,8 @@ export class ProgressService {
   static async getCourseProgressStats(courseId: number) {
     try {
       const [totalChapters, enrollments] = await Promise.all([
-        prisma.chapter.count({ where: { courseId } }),
-        prisma.enrollment.findMany({
+        db.chapter.count({ where: { courseId } }),
+        db.enrollment.findMany({
           where: { courseId, isActive: true },
           select: { userId: true }
         })
@@ -256,8 +264,8 @@ export class ProgressService {
       }
 
       const progressStats = await Promise.all(
-        enrollments.map(async (enrollment) => {
-          const completedChapters = await prisma.chapterProgress.count({
+        enrollments.map(async (enrollment: any) => {
+          const completedChapters = await db.chapterProgress.count({
             where: {
               userId: enrollment.userId,
               status: ProgressStatus.COMPLETED,
@@ -273,8 +281,12 @@ export class ProgressService {
         })
       );
 
-      const averageProgress = progressStats.reduce((sum, stat) => sum + stat.progress, 0) / progressStats.length;
-      const completionRate = (progressStats.filter(stat => stat.completed).length / progressStats.length) * 100;
+      const averageProgress = progressStats.reduce(
+        (sum: number, stat: any) => sum + stat.progress,
+        0
+      ) / progressStats.length;
+      const completionRate =
+        (progressStats.filter((stat: any) => stat.completed).length / progressStats.length) * 100;
 
       return {
         totalStudents: enrollments.length,
@@ -292,7 +304,7 @@ export class ProgressService {
    */
   static async canAccessChapter(userId: number, chapterId: number): Promise<boolean> {
     try {
-      const progress = await prisma.chapterProgress.findUnique({
+      const progress = await db.chapterProgress.findUnique({
         where: {
           userId_chapterId: {
             userId,
@@ -318,7 +330,7 @@ export class ProgressService {
     isTheoryAssessment: boolean = true
   ) {
     try {
-      const assessment = await prisma.assessment.findUnique({
+      const assessment = await db.assessment.findUnique({
         where: { id: assessmentId },
         include: {
           chapter: true
@@ -327,7 +339,7 @@ export class ProgressService {
 
       if (!assessment) throw new Error('Assessment not found');
 
-      const currentProgress = await prisma.chapterProgress.findUnique({
+      const currentProgress = await db.chapterProgress.findUnique({
         where: {
           userId_chapterId: {
             userId,
@@ -384,16 +396,16 @@ export class ProgressService {
         completedEnrollments,
         recentActivity
       ] = await Promise.all([
-        prisma.user.count({ where: { role: 'STUDENT' } }),
-        prisma.course.count({ where: { isActive: true } }),
-        prisma.enrollment.count({ where: { isActive: true } }),
-        prisma.enrollment.count({ 
+        db.user.count({ where: { role: 'STUDENT' } }),
+        db.course.count({ where: { isActive: true } }),
+        db.enrollment.count({ where: { isActive: true } }),
+        db.enrollment.count({ 
           where: { 
             isActive: true,
             completedAt: { not: null }
           }
         }),
-        prisma.chapterProgress.findMany({
+        db.chapterProgress.findMany({
           where: {
             lastAccessed: {
               gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // Última semana

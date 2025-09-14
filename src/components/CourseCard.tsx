@@ -1,3 +1,4 @@
+
 'use client';
 import React from 'react';
 
@@ -44,9 +45,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onEdit, onSelect }) => 
           </button>
         </div>
       </div>
+
     </div>
   );
 };
 
 export default CourseCard;
-

@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -177,6 +178,7 @@ const CourseDashboard: React.FC = () => {
 
         editingCourse={editingCourse || undefined}
       />
+
     </div>
   );
 };

@@ -64,8 +64,8 @@ const ChapterList: React.FC<ChapterListProps> = ({ course }) => {
         maxWeekNumber={chapters.length}
       />
     </div>
+
   );
 };
 
 export default ChapterList;
-
