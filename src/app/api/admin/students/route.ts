@@ -1,5 +1,10 @@
 
 // src/app/api/admin/students/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/auth';
+import prisma from '@/lib/prisma';
+
+
 export async function GET(request: NextRequest) {
   const session = await auth();
   
@@ -13,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     const where: any = { role: 'STUDENT' };
     
-    const students = await prisma.user.findMany({
+    const students = await db.user.findMany({
       where,
       include: {
         enrollments: {
@@ -35,9 +40,9 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' }
     });
 
-    const studentsWithStats = students.map(student => {
+    const studentsWithStats = students.map((student: any) => {
       const totalProgress = student.chapterProgress.length;
-      const completedProgress = student.chapterProgress.filter(p => p.status === 'COMPLETED').length;
+      const completedProgress = student.chapterProgress.filter((p: any) => p.status === 'COMPLETED').length;
       const progressPercentage = totalProgress > 0 ? Math.round((completedProgress / totalProgress) * 100) : 0;
       
       return {
@@ -46,8 +51,8 @@ export async function GET(request: NextRequest) {
         totalChapters: totalProgress,
         completedChapters: completedProgress,
         lastAccess: student.chapterProgress.length > 0 
-          ? student.chapterProgress.sort((a, b) => 
-              new Date(b.lastAccessed || b.startedAt || '').getTime() - 
+          ? student.chapterProgress.sort((a: any, b: any) =>
+              new Date(b.lastAccessed || b.startedAt || '').getTime() -
               new Date(a.lastAccessed || a.startedAt || '').getTime()
             )[0]?.lastAccessed || student.chapterProgress[0]?.startedAt
           : null

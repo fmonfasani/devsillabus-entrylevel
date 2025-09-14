@@ -1,40 +1,73 @@
-import React from 'react';
-import Link from 'next/link';
+
+'use client';
+import React, { useEffect, useState } from 'react';
+import CreateChapterModal from './CreateChapterModal';
 
 interface Chapter {
   id: number;
-  title: string;
   weekNumber: number;
-  courseId: number;
+  title: string;
 }
 
 interface ChapterListProps {
-  chapters: Chapter[];
+  course: { id: number; name: string };
 }
 
-/**
- * Muestra la lista de capítulos de un curso.
- *
- * `courseId` solía recibirse como prop, pero ahora se obtiene de cada capítulo
- * para simplificar la API del componente.
- */
-const ChapterList: React.FC<ChapterListProps> = ({ chapters }) => {
-  const renderCourseDetail = (chapter: Chapter) => (
-    <li key={chapter.id} className="rounded border p-3">
-      <Link
-        href={`/admin/courses/${chapter.courseId}/chapters/${chapter.id}`}
-        className="block hover:underline"
-      >
-        <span className="font-medium">Semana {chapter.weekNumber}:</span> {chapter.title}
-      </Link>
-    </li>
+const ChapterList: React.FC<ChapterListProps> = ({ course }) => {
+  const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const fetchChapters = async () => {
+    const res = await fetch(`/api/admin/courses/${course.id}/chapters`);
+    if (res.ok) {
+      setChapters(await res.json());
+    }
+  };
+
+  useEffect(() => {
+    fetchChapters();
+  }, [course.id]);
+
+  const handleSubmit = async (chapterData: any) => {
+    await fetch(`/api/admin/courses/${course.id}/chapters`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(chapterData)
+    });
+    setIsOpen(false);
+    fetchChapters();
+  };
+
+  return (
+    <div className="mt-2">
+      <div className="flex justify-between items-center mb-2">
+        <h4 className="font-semibold">Capítulos de {course.name}</h4>
+        <button
+          onClick={() => setIsOpen(true)}
+          className="px-2 py-1 text-sm border rounded hover:bg-gray-100"
+        >
+          Nuevo
+        </button>
+      </div>
+      <ul className="space-y-1">
+        {chapters.map((ch) => (
+          <li key={ch.id} className="border rounded p-2">
+            Semana {ch.weekNumber}: {ch.title}
+          </li>
+        ))}
+      </ul>
+
+      <CreateChapterModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onSubmit={handleSubmit}
+        courseId={course.id}
+        maxWeekNumber={chapters.length}
+      />
+    </div>
+
   );
 
-  if (!chapters.length) {
-    return <p className="text-sm text-gray-600">No hay capítulos creados.</p>;
-  }
-
-  return <ul className="space-y-2">{chapters.map(renderCourseDetail)}</ul>;
 };
 
 export default ChapterList;

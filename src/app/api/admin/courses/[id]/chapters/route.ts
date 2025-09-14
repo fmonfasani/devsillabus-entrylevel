@@ -1,4 +1,9 @@
 // src/app/api/admin/courses/[id]/chapters/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/auth';
+import prisma from '@/lib/prisma';
+
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -12,7 +17,7 @@ export async function GET(
   try {
     const courseId = parseInt(params.id);
     
-    const chapters = await prisma.chapter.findMany({
+    const chapters = await db.chapter.findMany({
       where: { courseId },
       orderBy: { weekNumber: 'asc' },
       include: {
@@ -51,7 +56,7 @@ export async function POST(
     const courseId = parseInt(params.id);
     const data = await request.json();
     
-    const chapter = await prisma.chapter.create({
+    const chapter = await db.chapter.create({
       data: {
         ...data,
         courseId,
