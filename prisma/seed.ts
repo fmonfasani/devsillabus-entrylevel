@@ -112,8 +112,8 @@ async function main() {
   for (const courseData of courses) {
     const course = await prisma.course.upsert({
       where: { slug: courseData.slug },
-      update: courseData,
-      create: courseData
+      update: courseData as any,
+      create: courseData as any
     });
     createdCourses.push(course);
   }

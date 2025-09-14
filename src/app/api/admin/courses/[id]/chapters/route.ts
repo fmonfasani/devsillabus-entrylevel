@@ -1,4 +1,8 @@
 // src/app/api/admin/courses/[id]/chapters/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/auth';
+import prisma from '@/lib/prisma';
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }

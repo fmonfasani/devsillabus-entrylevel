@@ -1,8 +1,5 @@
-
-// src/components/CreateCourseModal.tsx
 'use client';
-import React, { useState } from 'react';
-import { X, Save } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 
 interface CreateCourseModalProps {
   isOpen: boolean;
@@ -91,8 +88,9 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
+            aria-label="Cerrar"
           >
-            <X size={24} />
+            ✕
           </button>
         </div>
 
@@ -122,7 +120,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({
                 value={formData.slug}
                 onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="fs-entry-level"
+                placeholder="fullstack-entry"
               />
             </div>
           </div>
@@ -238,9 +236,12 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({
             </button>
             <button
               type="submit"
-              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+              className={[
+                'flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700',
+                'flex items-center justify-center gap-2'
+              ].join(' ')}
             >
-              <Save size={16} />
+              💾
               {editingCourse ? 'Actualizar' : 'Crear'} Curso
             </button>
           </div>
@@ -251,3 +252,4 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({
 };
 
 export default CreateCourseModal;
+
