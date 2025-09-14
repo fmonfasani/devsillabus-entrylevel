@@ -5,7 +5,8 @@ import { config as env } from "dotenv";
 env({ path: ".env" });
 env({ path: "prisma/.env" });
 
-const prisma = new PrismaClient();
+// Cast PrismaClient to any to avoid type errors if types are out of sync
+const prisma = new PrismaClient() as any;
 
 async function main() {
   console.log('🌱 Starting seed process...');
@@ -22,13 +23,14 @@ async function main() {
 
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
-    update: { role: 'ADMIN' },
+    // Cast update to any to avoid type errors if generated types are outdated
+    update: { role: 'ADMIN' } as any,
     create: {
       email: adminEmail,
       name: 'Admin',
       passwordHash,
       role: 'ADMIN'
-    }
+    } as any
   });
 
   console.log('✅ Admin user created/updated');
@@ -53,7 +55,7 @@ async function main() {
         name: userData.name,
         passwordHash: studentHash,
         role: 'STUDENT'
-      }
+      } as any
     });
     students.push(student);
   }
@@ -411,7 +413,7 @@ async function main() {
 
     if (userEnrollment) {
       for (const update of studentProgress.updates) {
-        const chapter = userEnrollment.course.chapters.find(c => c.weekNumber === update.weekNumber);
+        const chapter = userEnrollment.course.chapters.find((c: any) => c.weekNumber === update.weekNumber);
         if (chapter) {
           await prisma.chapterProgress.upsert({
             where: {

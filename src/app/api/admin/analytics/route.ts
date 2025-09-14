@@ -1,4 +1,10 @@
 // src/app/api/admin/analytics/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/auth';
+import prisma from '@/lib/prisma';
+
+const db = prisma as any;
+
 export async function GET(request: NextRequest) {
   const session = await auth();
   
@@ -14,11 +20,11 @@ export async function GET(request: NextRequest) {
       completedCourses,
       averageProgress
     ] = await Promise.all([
-      prisma.user.count({ where: { role: 'STUDENT' } }),
-      prisma.course.count({ where: { isActive: true } }),
-      prisma.enrollment.count({ where: { isActive: true } }),
-      prisma.enrollment.count({ where: { completedAt: { not: null } } }),
-      prisma.chapterProgress.aggregate({
+      db.user.count({ where: { role: 'STUDENT' } }),
+      db.course.count({ where: { isActive: true } }),
+      db.enrollment.count({ where: { isActive: true } }),
+      db.enrollment.count({ where: { completedAt: { not: null } } }),
+      db.chapterProgress.aggregate({
         _avg: {
           theoryScore: true,
           practiceScore: true
@@ -26,7 +32,7 @@ export async function GET(request: NextRequest) {
       })
     ]);
 
-    const completionRate = activeEnrollments > 0 
+    const completionRate = activeEnrollments > 0
       ? Math.round((completedCourses / activeEnrollments) * 100)
       : 0;
 
