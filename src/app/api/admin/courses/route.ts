@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
 
+const db = prisma as any;
+
 export async function GET(request: NextRequest) {
   const session = await auth();
   
@@ -26,7 +28,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const courses = await prisma.course.findMany({
+    const courses = await db.course.findMany({
       where,
       include: {
         chapters: {
@@ -47,13 +49,13 @@ export async function GET(request: NextRequest) {
     });
 
     const coursesWithStats = await Promise.all(
-      courses.map(async (course) => {
+      courses.map(async (course: any) => {
         // Calcular tasa de completación
         const totalEnrollments = course.enrollments.length;
         let completionRate = 0;
         
         if (totalEnrollments > 0) {
-          const completedEnrollments = await prisma.enrollment.count({
+          const completedEnrollments = await db.enrollment.count({
             where: {
               courseId: course.id,
               isActive: true,
@@ -90,7 +92,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
     const { name, slug, description, type, level, durationWeeks, startDate, endDate } = data;
 
-    const course = await prisma.course.create({
+    const course = await db.course.create({
       data: {
         name,
         slug,
