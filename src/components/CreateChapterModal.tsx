@@ -1,9 +1,5 @@
-
-
-// src/components/CreateChapterModal.tsx
 'use client';
 import React, { useState, useEffect } from 'react';
-import { X, Save } from 'lucide-react';
 
 interface CreateChapterModalProps {
   isOpen: boolean;
@@ -80,8 +76,9 @@ const CreateChapterModal: React.FC<CreateChapterModalProps> = ({
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
+            aria-label="Cerrar"
           >
-            <X size={24} />
+            ✕
           </button>
         </div>
 
@@ -122,7 +119,7 @@ const CreateChapterModal: React.FC<CreateChapterModalProps> = ({
               type="text"
               required
               value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value } ))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="Ej: Fundamentos + Docker 101"
             />
@@ -169,4 +166,72 @@ const CreateChapterModal: React.FC<CreateChapterModalProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Puntaje Mínimo Teoría *
+              </label>
+              <input
+                type="number"
+                required
+                min="0"
+                max="100"
+                value={formData.minScoreTheory}
+                onChange={(e) => setFormData(prev => ({ ...prev, minScoreTheory: parseInt(e.target.value) }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Puntaje Mínimo Práctica *
+              </label>
+              <input
+                type="number"
+                required
+                min="0"
+                max="100"
+                value={formData.minScorePractice}
+                onChange={(e) => setFormData(prev => ({ ...prev, minScorePractice: parseInt(e.target.value) }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="isPublished"
+              checked={formData.isPublished}
+              onChange={(e) => setFormData(prev => ({ ...prev, isPublished: e.target.checked }))}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="isPublished" className="ml-2 text-sm text-gray-700">
+              Capítulo publicado
+            </label>
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className={[
+                'flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700',
+                'flex items-center justify-center gap-2'
+              ].join(' ')}
+            >
+              💾
+              {editingChapter ? 'Actualizar' : 'Crear'} Capítulo
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default CreateChapterModal;
+

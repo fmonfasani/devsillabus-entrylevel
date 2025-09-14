@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
 
+const db = prisma as any;
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -16,7 +18,7 @@ export async function GET(
   try {
     const courseId = parseInt(params.id);
     
-    const course = await prisma.course.findUnique({
+    const course = await db.course.findUnique({
       where: { id: courseId },
       include: {
         chapters: {
@@ -74,7 +76,7 @@ export async function PUT(
     const courseId = parseInt(params.id);
     const data = await request.json();
     
-    const course = await prisma.course.update({
+    const course = await db.course.update({
       where: { id: courseId },
       data: {
         ...data,
