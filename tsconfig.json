@@ -38,7 +38,12 @@
   ],
   "exclude": [
     "node_modules",
+
+
     "prisma",
     "src/components/CreateChapterModal.tsx"
+
+    "prisma/seed.ts"
+
   ]
 }

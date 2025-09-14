@@ -6,6 +6,7 @@ pnpm-debug.log*
 # Next.js
 .next/
 .next-cache/
+\.next
 out/
 
 # Env & DB
@@ -22,3 +23,27 @@ coverage/
 .DS_Store
 .vscode/
 .idea/
+*.next/
+/.next
+
+# Build / cache
+.next/
+out/
+# Node
+node_modules/
+*.log
+# Env
+.env
+.env.*
+prisma/.env
+# Vercel
+.vercel/
+
+.next/
+node_modules/
+.env
+.env.*
+prisma/.env
+.vercel/
+out/
+
