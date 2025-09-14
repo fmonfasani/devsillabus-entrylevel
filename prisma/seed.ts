@@ -132,9 +132,11 @@ async function main() {
   const createdCourses = [];
   for (const c of coursesData) {
     const course = await prisma.course.upsert({
-      where: { slug: c.slug },
-      update: c,
-      create: c,
+
+      where: { slug: courseData.slug },
+      update: courseData as any,
+      create: courseData as any
+
     });
     createdCourses.push(course);
   }
