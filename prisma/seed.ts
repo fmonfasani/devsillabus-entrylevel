@@ -290,6 +290,30 @@ async function main() {
     console.log(`✅ Created ${chapters.length} chapters for ${fsEntryLevel.name}`);
   }
 
+  // --- DESPUÉS de `console.log(\`✅ Created ${createdCourses.length} courses\`);` ---
+
+// Enrolar al admin en dos cursos para que vea algo en el dashboard
+const adminCourses = ["fs-entry-level", "devops-bootcamp"];
+for (const slug of adminCourses) {
+  const course = createdCourses.find(c => c.slug === slug);
+  if (course) {
+    await prisma.enrollment.upsert({
+      where: {
+        userId_courseId: {
+          userId: admin.id,
+          courseId: course.id,
+        },
+      },
+      update: {},
+      create: {
+        userId: admin.id,
+        courseId: course.id,
+      },
+    });
+  }
+}
+
+
   // --- Chapters (DevOps Bootcamp) ---
   const devopsBootcamp = createdCourses.find((c) => c.slug === 'devops-bootcamp');
   if (devopsBootcamp) {
