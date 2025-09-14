@@ -4,7 +4,7 @@ redirect_from:
 layout: default
 title: "Week 0: Setup & Your First Website 1"
 parent: Full Stack Developer
-nav_order: 1
+nav_order: 2
 ---
 
 # Week 0: Setup & Your First Website 🌱
