@@ -1,3 +1,4 @@
+
 'use client';
 import React, { useEffect, useState } from 'react';
 import CreateChapterModal from './CreateChapterModal';
@@ -66,6 +67,7 @@ const ChapterList: React.FC<ChapterListProps> = ({ course }) => {
     </div>
 
   );
+
 };
 
 export default ChapterList;
