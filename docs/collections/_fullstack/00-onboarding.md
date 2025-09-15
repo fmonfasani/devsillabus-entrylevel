@@ -114,7 +114,7 @@ HTML (HyperText Markup Language) is the **structure** of web pages.
     </main>
     
     <footer>
-        <p>&copy; 2024 My Name</p>
+        <p>&copy; 2024 @devSyllabus</p>
     </footer>
 </body>
 </html>
