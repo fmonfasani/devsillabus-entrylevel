@@ -1,3 +1,4 @@
+
 // app/api/admin/chapters/[id]/assessments/route.ts
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
@@ -21,4 +22,5 @@ export async function POST(
   const chapterId = Number(params.id);
   const assessment = await addAssessment(chapterId, parsed.data);
   return NextResponse.json(assessment, { status: 201 });
+
 }
