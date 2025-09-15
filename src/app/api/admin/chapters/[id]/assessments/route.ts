@@ -1,46 +1,27 @@
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { auth } from "@/auth";
-import { AssessmentType } from "@prisma/client";
 
-async function requireAdmin() {
-  const s = await auth();
-  if (!s?.user?.email) return null;
-  const me = await prisma.user.findUnique({ where: { email: s.user.email }, select: { role: true } });
-  return me?.role === "ADMIN";
-}
+// app/api/admin/chapters/[id]/assessments/route.ts
+import { NextResponse } from 'next/server';
+import { auth } from '@/auth';
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
-  if (!(await requireAdmin())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+import { addAssessment } from '@/lib/adminService';
+import { assessmentCreateSchema } from '@/schemas/admin';
 
-  const chapterId = Number(params.id);
-  const body = await req.json();
-  const {
-    type,                // "QUIZ" | "LAB"
-    title,
-    instructions = null,
-    passingScore = 70,
-    maxAttempts = null,
-    timeLimitMinutes = null,
-    questions = null     // Json opcional si agregaste el campo
-  } = body;
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await auth();
 
-  if (!chapterId || !type || !title) {
-    return NextResponse.json({ error: "chapterId, type, title requeridos" }, { status: 400 });
+  const role = (session?.user as any)?.role;
+  if (role !== 'ADMIN') {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
-
-  const a = await prisma.assessment.create({
-    data: {
-      chapterId,
-      type: type as AssessmentType,
-      title,
-      instructions,
-      passingScore,
-      maxAttempts,
-      timeLimitMinutes,
-      ...(questions ? { questions } : {}),
-    },
-  });
-
-  return NextResponse.json(a, { status: 201 });
+  const json = await req.json();
+  const parsed = assessmentCreateSchema.safeParse(json);
+  if (!parsed.success) {
+    return NextResponse.json({ errors: parsed.error.flatten().fieldErrors }, { status: 400 });
+  }
+  const chapterId = Number(params.id);
+  const assessment = await addAssessment(chapterId, parsed.data);
+  return NextResponse.json(assessment, { status: 201 });
 }

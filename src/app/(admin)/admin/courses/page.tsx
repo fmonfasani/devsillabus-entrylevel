@@ -1,4 +1,5 @@
 // app/(admin)/admin/courses/page.tsx
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -85,6 +86,7 @@ function CoursesContent() {
         onClose={() => setShowModal(false)}
         onCreated={handleCreated}
       />
+
     </div>
   );
 }

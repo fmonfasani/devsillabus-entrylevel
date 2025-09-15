@@ -1,6 +1,7 @@
 // src/components/CreateCourseModal.tsx
 'use client';
 
+
 import { useState } from 'react';
 import { CourseLevel, CourseType } from '@prisma/client';
 import { useToast } from './Toast';
@@ -23,28 +24,36 @@ interface Props {
 
 export default function CreateCourseModal({ isOpen, onClose, onCreated }: Props) {
   const { addToast } = useToast();
+
   const [form, setForm] = useState({
     name: '',
     slug: '',
     description: '',
+
     type: CourseType.FULLSTACK as CourseType,
     level: CourseLevel.ENTRY_LEVEL as CourseLevel,
     initWeeks: false,
+
   });
   const [loading, setLoading] = useState(false);
 
+
   const handleChange = (field: string, value: any) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setLoading(true);
     const res = await fetch('/api/admin/courses', {
+
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     });
+
     setLoading(false);
     if (res.status === 201) {
       const data = await res.json();
@@ -63,8 +72,6 @@ export default function CreateCourseModal({ isOpen, onClose, onCreated }: Props)
       addToast('Error al crear curso', 'error');
     }
   };
-
-  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

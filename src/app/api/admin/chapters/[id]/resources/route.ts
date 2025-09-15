@@ -1,43 +1,28 @@
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { auth } from "@/auth";
-import { ResourceType } from "@prisma/client";
 
-async function requireAdmin() {
-  const s = await auth();
-  if (!s?.user?.email) return null;
-  const me = await prisma.user.findUnique({ where: { email: s.user.email }, select: { role: true } });
-  return me?.role === "ADMIN";
-}
+// app/api/admin/chapters/[id]/resources/route.ts
+import { NextResponse } from 'next/server';
+import { auth } from '@/auth';
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
-  if (!(await requireAdmin())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+import { addChapterResource } from '@/lib/adminService';
+import { resourceCreateSchema } from '@/schemas/admin';
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await auth();
 
-  const chapterId = Number(params.id);
-  const { type, title, url, content, isRequired = false } = await req.json();
-  if (!chapterId || !type || !title) {
-    return NextResponse.json({ error: "chapterId, type, title requeridos" }, { status: 400 });
+  const role = (session?.user as any)?.role;
+  if (role !== 'ADMIN') {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
   }
+  const json = await req.json();
+  const parsed = resourceCreateSchema.safeParse(json);
+  if (!parsed.success) {
+    return NextResponse.json({ errors: parsed.error.flatten().fieldErrors }, { status: 400 });
+  }
+  const chapterId = Number(params.id);
+  const resource = await addChapterResource(chapterId, parsed.data);
+  return NextResponse.json(resource, { status: 201 });
 
-  // calcular siguiente orderIndex (único por capítulo)
-  const last = await prisma.chapterResource.findFirst({
-    where: { chapterId },
-    orderBy: { orderIndex: "desc" },
-    select: { orderIndex: true },
-  });
-  const orderIndex = (last?.orderIndex ?? 0) + 1;
-
-  const res = await prisma.chapterResource.create({
-    data: {
-      chapterId,
-      type: type as ResourceType,
-      title,
-      url: url ?? null,
-      content: content ?? null,
-      orderIndex,
-      isRequired,
-    },
-  });
-
-  return NextResponse.json(res, { status: 201 });
 }

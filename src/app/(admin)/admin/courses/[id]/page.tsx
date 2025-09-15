@@ -1,4 +1,5 @@
 // app/(admin)/admin/courses/[id]/page.tsx
+
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
 
@@ -42,6 +43,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
         <p>Recursos: {resourcesCount}</p>
         <p>Evaluaciones: {assessmentsCount}</p>
       </div>
+
     </div>
   );
 }

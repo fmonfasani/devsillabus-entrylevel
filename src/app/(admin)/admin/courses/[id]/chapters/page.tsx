@@ -1,4 +1,5 @@
 // app/(admin)/admin/courses/[id]/chapters/page.tsx
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -184,6 +185,7 @@ function ChaptersContent({ courseId }: { courseId: number }) {
           </div>
         </div>
       )}
+
     </div>
   );
 }
