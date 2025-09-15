@@ -1,3 +1,4 @@
+
 // app/api/admin/chapters/[id]/assessments/route.ts
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
@@ -31,11 +32,13 @@ export async function POST(
     const data: any = {
       chapterId,
       type,
+
       title,
       instructions,
       passingScore,
       maxAttempts,
       timeLimitMinutes,
+
     };
     const hasQuestions = (prisma as any).assessment?.fields?.questions !== undefined;
     if (hasQuestions && questions !== undefined) {
@@ -47,4 +50,5 @@ export async function POST(
     console.error('Error creating assessment', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
+
 }

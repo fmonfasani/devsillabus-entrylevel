@@ -1,3 +1,4 @@
+
 // app/api/admin/chapters/[id]/resources/route.ts
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
@@ -41,4 +42,5 @@ export async function POST(
     console.error('Error creating resource', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
+
 }
