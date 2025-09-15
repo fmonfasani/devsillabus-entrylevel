@@ -1,21 +1,92 @@
 // app/(admin)/admin/courses/page.tsx
-import { listCourses } from '@/lib/courseService';
-import Link from 'next/link';
 
-export default async function AdminCoursesPage() {
-  const courses = await listCourses();
+'use client';
+
+import { useEffect, useState } from 'react';
+import CourseCardAdmin, { CourseSummary } from '@/components/CourseCardAdmin';
+import CreateCourseModal from '@/components/CreateCourseModal';
+import { ToastProvider } from '@/components/Toast';
+import { useToast } from '@/components/Toast';
+import EmptyState from '@/components/EmptyState';
+
+export default function CoursesPage() {
+  return (
+    <ToastProvider>
+      <CoursesContent />
+    </ToastProvider>
+  );
+}
+
+function CoursesContent() {
+  const { addToast } = useToast();
+  const [courses, setCourses] = useState<CourseSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [forbidden, setForbidden] = useState(false);
+
+  const loadCourses = async () => {
+    setLoading(true);
+    const res = await fetch('/api/courses');
+    if (res.status === 403) {
+      setForbidden(true);
+      setLoading(false);
+      return;
+    }
+    if (res.ok) {
+      const data = await res.json();
+      setCourses(
+        data.map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          slug: c.slug,
+          type: c.type,
+          level: c.level,
+          chaptersCount: c.chaptersCount ?? (c.chapters ? c.chapters.length : 0),
+        }))
+      );
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadCourses();
+  }, []);
+
+  const handleCreated = (course: CourseSummary) => {
+    setCourses((prev) => [...prev, { ...course, chaptersCount: 0 }]);
+    addToast('Curso creado');
+  };
+
+  if (forbidden) return <p className="p-6">Solo ADMIN</p>;
+
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Cursos</h1>
-      <ul className="space-y-2">
-        {courses.map((c) => (
-          <li key={c.id} className="border p-2 rounded">
-            <Link href={`/admin/courses/${c.id}`} className="text-blue-600 underline">
-              {c.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Cursos</h1>
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Nuevo curso
+        </button>
+      </div>
+      {loading ? (
+        <p>Cargando...</p>
+      ) : courses.length === 0 ? (
+        <EmptyState message="Sin cursos" />
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
+          {courses.map((c) => (
+            <CourseCardAdmin key={c.id} course={c} />
+          ))}
+        </div>
+      )}
+      <CreateCourseModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onCreated={handleCreated}
+      />
+
     </div>
   );
 }
