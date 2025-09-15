@@ -1,255 +1,179 @@
+// src/components/CreateCourseModal.tsx
 'use client';
-import React, { useState, useEffect } from 'react';
 
-interface CreateCourseModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (courseData: any) => void;
-  editingCourse?: any;
+import { useState } from 'react';
+import { CourseLevel, CourseType } from '@prisma/client';
+import { useToast } from './Toast';
+
+interface Course {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  type: CourseType;
+  level: CourseLevel;
+  initWeeks: boolean;
 }
 
-const CreateCourseModal: React.FC<CreateCourseModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  editingCourse
-}) => {
-  const [formData, setFormData] = useState({
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  onCreated: (course: Course) => void;
+}
+
+export default function CreateCourseModal({ isOpen, onClose, onCreated }: Props) {
+  const { addToast } = useToast();
+  const [form, setForm] = useState({
     name: '',
     slug: '',
     description: '',
-    type: 'FULLSTACK',
-    level: 'ENTRY_LEVEL',
-    durationWeeks: 12,
-    startDate: '',
-    endDate: '',
-    isActive: true
+    type: CourseType.FULLSTACK as CourseType,
+    level: CourseLevel.ENTRY_LEVEL as CourseLevel,
+    initWeeks: false,
   });
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (editingCourse) {
-      setFormData({
-        name: editingCourse.name || '',
-        slug: editingCourse.slug || '',
-        description: editingCourse.description || '',
-        type: editingCourse.type || 'FULLSTACK',
-        level: editingCourse.level || 'ENTRY_LEVEL',
-        durationWeeks: editingCourse.durationWeeks || 12,
-        startDate: editingCourse.startDate ? editingCourse.startDate.split('T')[0] : '',
-        endDate: editingCourse.endDate ? editingCourse.endDate.split('T')[0] : '',
-        isActive: editingCourse.isActive ?? true
-      });
-    } else {
-      setFormData({
+  const handleChange = (field: string, value: any) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const res = await fetch('/api/admin/courses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+    setLoading(false);
+    if (res.status === 201) {
+      const data = await res.json();
+      addToast('Curso creado');
+      onCreated(data);
+      onClose();
+      setForm({
         name: '',
         slug: '',
         description: '',
-        type: 'FULLSTACK',
-        level: 'ENTRY_LEVEL',
-        durationWeeks: 12,
-        startDate: '',
-        endDate: '',
-        isActive: true
+        type: CourseType.FULLSTACK,
+        level: CourseLevel.ENTRY_LEVEL,
+        initWeeks: false,
       });
+    } else {
+      addToast('Error al crear curso', 'error');
     }
-  }, [editingCourse, isOpen]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-    onClose();
-  };
-
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .trim();
-  };
-
-  const handleNameChange = (name: string) => {
-    setFormData(prev => ({
-      ...prev,
-      name,
-      slug: generateSlug(name)
-    }));
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">
-            {editingCourse ? 'Editar Curso' : 'Crear Nuevo Curso'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-            aria-label="Cerrar"
-          >
-            ✕
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nombre del Curso *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) => handleNameChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Ej: Full Stack Entry Level"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Slug *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.slug}
-                onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="fullstack-entry"
-              />
-            </div>
-          </div>
-
+      <div className="bg-white rounded p-6 w-full max-w-lg">
+        <h2 className="text-lg font-semibold mb-4">Crear curso</h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="course-name" className="block text-sm font-medium mb-1">
+              Nombre
+            </label>
+            <input
+              id="course-name"
+              className="w-full border rounded p-2"
+              value={form.name}
+              onChange={(e) =>
+                handleChange('name', e.target.value)
+              }
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="course-slug" className="block text-sm font-medium mb-1">
+              Slug
+            </label>
+            <input
+              id="course-slug"
+              className="w-full border rounded p-2"
+              value={form.slug}
+              onChange={(e) => handleChange('slug', e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="course-description" className="block text-sm font-medium mb-1">
               Descripción
             </label>
             <textarea
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              id="course-description"
+              className="w-full border rounded p-2"
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="Descripción del curso..."
+              value={form.description}
+              onChange={(e) => handleChange('description', e.target.value)}
             />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tipo *
+              <label htmlFor="course-type" className="block text-sm font-medium mb-1">
+                Tipo
               </label>
               <select
-                required
-                value={formData.type}
-                onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                id="course-type"
+                className="w-full border rounded p-2"
+                value={form.type}
+                onChange={(e) => handleChange('type', e.target.value as CourseType)}
               >
-                <option value="FULLSTACK">Full Stack</option>
-                <option value="DEVOPS">DevOps</option>
+                {Object.values(CourseType).map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
               </select>
             </div>
-
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nivel *
+              <label htmlFor="course-level" className="block text-sm font-medium mb-1">
+                Nivel
               </label>
               <select
-                required
-                value={formData.level}
-                onChange={(e) => setFormData(prev => ({ ...prev, level: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                id="course-level"
+                className="w-full border rounded p-2"
+                value={form.level}
+                onChange={(e) => handleChange('level', e.target.value as CourseLevel)}
               >
-                <option value="ENTRY_LEVEL">Entry Level</option>
-                <option value="BOOTCAMP">Bootcamp</option>
-                <option value="MID_LEVEL">Mid Level</option>
-                <option value="SENIOR">Senior</option>
+                {Object.values(CourseLevel).map((l) => (
+                  <option key={l} value={l}>
+                    {l}
+                  </option>
+                ))}
               </select>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Duración (semanas) *
-              </label>
-              <input
-                type="number"
-                required
-                min="1"
-                max="52"
-                value={formData.durationWeeks}
-                onChange={(e) => setFormData(prev => ({ ...prev, durationWeeks: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Fecha de Inicio
-              </label>
-              <input
-                type="date"
-                value={formData.startDate}
-                onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Fecha de Finalización
-              </label>
-              <input
-                type="date"
-                value={formData.endDate}
-                onChange={(e) => setFormData(prev => ({ ...prev, endDate: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center">
+          <div className="flex items-center space-x-2">
             <input
+              id="course-initweeks"
               type="checkbox"
-              id="isActive"
-              checked={formData.isActive}
-              onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              checked={form.initWeeks}
+              onChange={(e) => handleChange('initWeeks', e.target.checked)}
             />
-            <label htmlFor="isActive" className="ml-2 text-sm text-gray-700">
-              Curso activo
+            <label htmlFor="course-initweeks" className="text-sm">
+              Inicializar semanas
             </label>
           </div>
-
-          <div className="flex gap-3 pt-4">
+          <div className="flex justify-end space-x-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 bg-gray-200 rounded"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className={[
-                'flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700',
-                'flex items-center justify-center gap-2'
-              ].join(' ')}
+              disabled={loading}
+              className="px-4 py-2 bg-blue-600 text-white rounded"
             >
-              💾
-              {editingCourse ? 'Actualizar' : 'Crear'} Curso
+              {loading ? 'Guardando...' : 'Crear'}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-};
-
-export default CreateCourseModal;
-
+}
