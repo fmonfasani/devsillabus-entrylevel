@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz FS-01 — HTML/CSS/JS</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; max-width: 800px; margin: 32px auto; padding: 0 16px; }
+    .q { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin: 12px 0; }
+    button { padding: 8px 14px; border-radius: 8px; border: 1px solid #999; background: #f6f6f6; cursor: pointer; }
+    .ok { color: #0a7f2e; } .bad { color: #b00020; }
+  </style>
+</head>
+<body>
+<h1>Quiz FS-01 — HTML/CSS/JS</h1>
+<p>Corre 100% local/offline. No envía datos.</p>
+<div id="quiz"></div>
+<button id="finish">Calificar</button>
+<div id="result" style="margin-top:12px;"></div>
+<noscript>
+  <p>Este quiz necesita JavaScript para calificar automáticamente. Respuestas correctas al final.</p>
+  <ol>
+    <li>
+      <p>¿Qué etiqueta HTML se usa para crear un enlace?</p>
+      <ul>
+        <li>&lt;link&gt;</li>
+        <li>&lt;a&gt;</li>
+        <li>&lt;href&gt;</li>
+        <li>&lt;url&gt;</li>
+      </ul>
+      <p>Respuesta correcta: &lt;a&gt;</p>
+    </li>
+    <li>
+      <p>¿Qué selector CSS selecciona un elemento con id "principal"?</p>
+      <ul>
+        <li>#principal</li>
+        <li>.principal</li>
+        <li>principal</li>
+        <li>*principal</li>
+      </ul>
+      <p>Respuesta correcta: #principal</p>
+    </li>
+    <li>
+      <p>¿Cuál es la sintaxis correcta para declarar una función llamada <code>sumar</code>?</p>
+      <ul>
+        <li><code>function sumar(a,b) { return a+b; }</code></li>
+        <li><code>func sumar(a,b) { return a+b; }</code></li>
+        <li><code>function:sumar(a,b){return a+b;}</code></li>
+        <li><code>def sumar(a,b): return a+b</code></li>
+      </ul>
+      <p>Respuesta correcta: <code>function sumar(a,b) { return a+b; }</code></p>
+    </li>
+  </ol>
+</noscript>
+<script src="script.js"></script>
+</body>
+</html>
