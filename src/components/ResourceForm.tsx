@@ -4,6 +4,8 @@
 import { useState } from 'react';
 import { ResourceType } from '@prisma/client';
 import { useToast } from './Toast';
+import YouTubeVideoInput from './YouTubeVideoInput';
+import { YouTubeVideoInfo } from '@/lib/youtubeUtils';
 
 interface Props {
   chapterId: number;
@@ -17,6 +19,8 @@ export default function ResourceForm({ chapterId, onCreated }: Props) {
   const [content, setContent] = useState('');
   const [isRequired, setIsRequired] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [youtubeInfo, setYoutubeInfo] = useState<YouTubeVideoInfo | null>(null);
+  const [urlError, setUrlError] = useState<string | null>(null);
   const { addToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,6 +29,12 @@ export default function ResourceForm({ chapterId, onCreated }: Props) {
     const payload: any = { type, title, isRequired };
     if (type === ResourceType.DOCUMENT) payload.content = content;
     else payload.url = url;
+    if (youtubeInfo) {
+      payload.videoId = youtubeInfo.videoId;
+      payload.thumbnail = youtubeInfo.thumbnail;
+      payload.embedUrl = youtubeInfo.embedUrl;
+      payload.isYouTube = true;
+    }
 
     const res = await fetch(`/api/admin/chapters/${chapterId}/resources`, {
       method: 'POST',
@@ -39,6 +49,8 @@ export default function ResourceForm({ chapterId, onCreated }: Props) {
       setTitle('');
       setUrl('');
       setContent('');
+      setYoutubeInfo(null);
+      setUrlError(null);
     } else {
       addToast('Error al agregar recurso', 'error');
     }
@@ -53,7 +65,13 @@ export default function ResourceForm({ chapterId, onCreated }: Props) {
         <select
           id="res-type"
           value={type}
-          onChange={(e) => setType(e.target.value as ResourceType)}
+          onChange={(e) => {
+            setType(e.target.value as ResourceType);
+            setUrl('');
+            setContent('');
+            setYoutubeInfo(null);
+            setUrlError(null);
+          }}
           className="w-full border rounded p-2"
         >
           {Object.values(ResourceType).map((rt) => (
@@ -89,6 +107,21 @@ export default function ResourceForm({ chapterId, onCreated }: Props) {
             required
           />
         </div>
+      ) : type === ResourceType.VIDEO ? (
+        <div>
+          <label className="block text-sm font-medium mb-1" htmlFor="res-url">
+            URL
+          </label>
+          <YouTubeVideoInput
+            value={url}
+            onChange={setUrl}
+            onValidation={(info, err) => {
+              setYoutubeInfo(info);
+              setUrlError(err);
+              if (!title && info?.title) setTitle(info.title);
+            }}
+          />
+        </div>
       ) : (
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="res-url">
@@ -118,7 +151,7 @@ export default function ResourceForm({ chapterId, onCreated }: Props) {
       <button
         type="submit"
         className="bg-blue-600 text-white px-3 py-2 rounded"
-        disabled={loading}
+        disabled={loading || (type === ResourceType.VIDEO && !!urlError)}
       >
         {loading ? 'Guardando...' : 'Guardar Recurso'}
       </button>

@@ -16,6 +16,10 @@ type ResourceDto = {
   url?: string;
   content?: string;
   isRequired?: boolean;
+  videoId?: string;
+  thumbnail?: string;
+  embedUrl?: string;
+  isYouTube?: boolean;
 };
 
 type AssessmentDto = {

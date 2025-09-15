@@ -5,6 +5,7 @@ import { auth } from '@/auth';
 
 import { addChapterResource } from '@/lib/adminService';
 import { resourceCreateSchema } from '@/schemas/admin';
+import { z } from 'zod';
 export async function POST(
   req: Request,
   { params }: { params: { id: string } }
@@ -17,7 +18,13 @@ export async function POST(
 
   }
   const json = await req.json();
-  const parsed = resourceCreateSchema.safeParse(json);
+  const schema = resourceCreateSchema.extend({
+    videoId: z.string().optional(),
+    thumbnail: z.string().url().optional(),
+    embedUrl: z.string().url().optional(),
+    isYouTube: z.boolean().optional(),
+  });
+  const parsed = schema.safeParse(json);
   if (!parsed.success) {
     return NextResponse.json({ errors: parsed.error.flatten().fieldErrors }, { status: 400 });
   }

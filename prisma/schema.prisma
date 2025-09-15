@@ -133,6 +133,10 @@ model ChapterResource {
   content    String?      @db.Text
   orderIndex Int
   isRequired Boolean      @default(false)
+  videoId    String?
+  thumbnail  String?
+  embedUrl   String?
+  isYouTube  Boolean      @default(false)
 
   chapter Chapter @relation(fields: [chapterId], references: [id])
 
