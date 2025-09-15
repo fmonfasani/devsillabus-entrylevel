@@ -6,6 +6,7 @@ import { courseCreateSchema } from '@/schemas/admin';
 
 export async function POST(req: Request) {
   const session = await auth();
+
   const role = (session?.user as any)?.role;
   if (role !== 'ADMIN') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -19,6 +20,7 @@ export async function POST(req: Request) {
   const course = await createCourse(data);
   if (initWeeks) {
     await createChaptersRange(course.id);
+
   }
   return NextResponse.json(course, { status: 201 });
 }
