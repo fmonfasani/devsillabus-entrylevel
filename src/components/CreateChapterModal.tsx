@@ -1,237 +1,67 @@
+// src/components/CreateChapterModal.tsx
 'use client';
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-interface CreateChapterModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (chapterData: any) => void;
+interface Props {
   courseId: number;
-  maxWeekNumber: number;
-  editingChapter?: any;
+  nextWeekNumber?: number;
+  onCreated?: () => void;
 }
 
-const CreateChapterModal: React.FC<CreateChapterModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  courseId,
-  maxWeekNumber,
-  editingChapter
-}) => {
-  const [formData, setFormData] = useState({
-    weekNumber: maxWeekNumber + 1,
-    title: '',
-    description: '',
-    theoreticalContent: '',
-    practicalRequirements: '',
-    minScoreTheory: 80,
-    minScorePractice: 80,
-    unlockDate: '',
-    isPublished: false
-  });
+export default function CreateChapterModal({ courseId, nextWeekNumber = 0, onCreated }: Props) {
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({ weekNumber: nextWeekNumber, title: '' });
 
-  useEffect(() => {
-    if (editingChapter) {
-      setFormData({
-        weekNumber: editingChapter.weekNumber || maxWeekNumber + 1,
-        title: editingChapter.title || '',
-        description: editingChapter.description || '',
-        theoreticalContent: editingChapter.theoreticalContent || '',
-        practicalRequirements: editingChapter.practicalRequirements || '',
-        minScoreTheory: editingChapter.minScoreTheory || 80,
-        minScorePractice: editingChapter.minScorePractice || 80,
-        unlockDate: editingChapter.unlockDate ? editingChapter.unlockDate.split('T')[0] : '',
-        isPublished: editingChapter.isPublished ?? false
-      });
-    } else {
-      setFormData({
-        weekNumber: maxWeekNumber + 1,
-        title: '',
-        description: '',
-        theoreticalContent: '',
-        practicalRequirements: '',
-        minScoreTheory: 80,
-        minScorePractice: 80,
-        unlockDate: '',
-        isPublished: false
-      });
-    }
-  }, [editingChapter, isOpen, maxWeekNumber]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-    onClose();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
   };
 
-  if (!isOpen) return null;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await fetch(`/api/admin/courses/${courseId}/chapters`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+    setOpen(false);
+    onCreated?.();
+  };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">
-            {editingChapter ? 'Editar Capítulo' : 'Crear Nuevo Capítulo'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-            aria-label="Cerrar"
-          >
-            ✕
-          </button>
+    <div className="mb-4">
+      <button onClick={() => setOpen(true)} className="px-2 py-1 text-sm bg-blue-600 text-white rounded">
+        Nuevo Capítulo
+      </button>
+      {open && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+          <form onSubmit={handleSubmit} className="bg-white p-4 rounded space-y-2 w-64">
+            <h2 className="font-semibold">Crear Capítulo</h2>
+            <input
+              name="weekNumber"
+              type="number"
+              value={form.weekNumber}
+              onChange={handleChange}
+              className="w-full border p-1"
+            />
+            <input
+              name="title"
+              placeholder="Título"
+              value={form.title}
+              onChange={handleChange}
+              className="w-full border p-1"
+            />
+            <div className="flex justify-end space-x-2">
+              <button type="button" onClick={() => setOpen(false)} className="px-2 py-1 border rounded">
+                Cancelar
+              </button>
+              <button type="submit" className="px-2 py-1 bg-blue-600 text-white rounded">
+                Guardar
+              </button>
+            </div>
+          </form>
         </div>
-
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Número de Semana *
-              </label>
-              <input
-                type="number"
-                required
-                min="1"
-                value={formData.weekNumber}
-                onChange={(e) => setFormData(prev => ({ ...prev, weekNumber: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Fecha de Desbloqueo
-              </label>
-              <input
-                type="datetime-local"
-                value={formData.unlockDate}
-                onChange={(e) => setFormData(prev => ({ ...prev, unlockDate: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Título del Capítulo *
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value } ))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="Ej: Fundamentos + Docker 101"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Descripción
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              rows={2}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="Descripción breve del capítulo..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Contenido Teórico
-            </label>
-            <textarea
-              value={formData.theoreticalContent}
-              onChange={(e) => setFormData(prev => ({ ...prev, theoreticalContent: e.target.value }))}
-              rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="Material teórico, enlaces a recursos, videos..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Requisitos Prácticos
-            </label>
-            <textarea
-              value={formData.practicalRequirements}
-              onChange={(e) => setFormData(prev => ({ ...prev, practicalRequirements: e.target.value }))}
-              rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="Labs, proyectos, ejercicios prácticos..."
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Puntaje Mínimo Teoría *
-              </label>
-              <input
-                type="number"
-                required
-                min="0"
-                max="100"
-                value={formData.minScoreTheory}
-                onChange={(e) => setFormData(prev => ({ ...prev, minScoreTheory: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Puntaje Mínimo Práctica *
-              </label>
-              <input
-                type="number"
-                required
-                min="0"
-                max="100"
-                value={formData.minScorePractice}
-                onChange={(e) => setFormData(prev => ({ ...prev, minScorePractice: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="isPublished"
-              checked={formData.isPublished}
-              onChange={(e) => setFormData(prev => ({ ...prev, isPublished: e.target.checked }))}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="isPublished" className="ml-2 text-sm text-gray-700">
-              Capítulo publicado
-            </label>
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className={[
-                'flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700',
-                'flex items-center justify-center gap-2'
-              ].join(' ')}
-            >
-              💾
-              {editingChapter ? 'Actualizar' : 'Crear'} Capítulo
-            </button>
-          </div>
-        </form>
-      </div>
+      )}
     </div>
   );
-};
-
-export default CreateChapterModal;
-
+}

@@ -11,7 +11,8 @@
     "prisma:studio": "prisma studio",
     "seed": "tsx -r dotenv/config prisma/seed.ts",
     "setup": "chmod +x setup.sh && ./setup.sh",
-    "setup:db": "npm run prisma:generate && npm run prisma:migrate && npm run seed"
+    "setup:db": "npm run prisma:generate && npm run prisma:migrate && npm run seed",
+    "test": "tsx --test src/lib/__tests__/*.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
