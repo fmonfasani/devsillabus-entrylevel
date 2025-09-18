@@ -1,10 +1,10 @@
 // app/api/courses/route.ts
 import { NextResponse } from 'next/server';
 
-import { listCourses } from '@/lib/courseService';
+import { makeListCourses } from '@/modules/course/factories';
 
 export async function GET() {
-  const courses = await listCourses();
+  const listCourses = makeListCourses();
+  const courses = await listCourses.execute();
   return NextResponse.json(courses);
-
 }

@@ -1,19 +1,14 @@
-import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 import { redirect, notFound } from "next/navigation";
 import QuizRunner from "./runner";
+import { makeGetChapterWithAssessments } from "@/modules/chapter/factories";
 
 export default async function QuizPage({ params:{ chapterId } }: { params:{ chapterId:string } }) {
   const session = await auth();
   if (!session?.user?.email) redirect("/login");
 
-  const chapter = await prisma.chapter.findUnique({
-    where: { id: Number(chapterId) },
-    include: {
-      course: { select: { id:true, slug:true, name:true } },
-      assessments: true
-    }
-  });
+  const getChapterWithAssessments = makeGetChapterWithAssessments();
+  const chapter = await getChapterWithAssessments.execute(Number(chapterId));
   if (!chapter) return notFound();
 
   const quiz = chapter.assessments.find(a => a.type === "QUIZ");

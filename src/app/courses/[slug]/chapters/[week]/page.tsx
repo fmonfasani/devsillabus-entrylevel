@@ -1,8 +1,10 @@
 // app/courses/[slug]/chapters/[week]/page.tsx
-import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { makeFindUserByEmail, makeGetEnrollment } from "@/modules/enrollment/factories";
+import { makeGetCourseDetail } from "@/modules/course/factories";
+import { makeGetChapterForCourse } from "@/modules/chapter/factories";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -45,31 +47,27 @@ export default async function ChapterPage({
   const session = await auth();
   if (!session?.user?.email) redirect("/login");
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    select: { id: true, role: true },
-  });
+  const findUserByEmail = makeFindUserByEmail();
+  const getCourseDetail = makeGetCourseDetail();
+  const getEnrollment = makeGetEnrollment();
+  const getChapterForCourse = makeGetChapterForCourse();
 
-  const course = await prisma.course.findUnique({
-    where: { slug },
-    select: { id: true, slug: true, name: true },
-  });
-  if (!course) return notFound();
+  const user = await findUserByEmail.execute(session.user.email);
+  if (!user) redirect("/login");
 
-  const enrolled = await prisma.enrollment.findUnique({
-    where: { userId_courseId: { userId: user!.id, courseId: course.id } },
-  });
-  if (user?.role !== "ADMIN" && !enrolled) redirect("/dashboard");
+  const detail = await getCourseDetail.execute(slug);
+  if (!detail) return notFound();
 
-  const chapter = await prisma.chapter.findFirst({
-    where: { courseId: course.id, weekNumber: w },
-    include: {
-      resources: { orderBy: { orderIndex: "asc" } },
-      assessments: true,
-    },
-  });
+  const enrollment = await getEnrollment.execute(user.id, detail.course.id!);
+  if (user.role !== "ADMIN" && !enrollment) redirect("/dashboard");
+
+  const chapter = await getChapterForCourse.execute(detail.course.id!, w);
   if (!chapter) return notFound();
-  if (!chapter.isPublished && user?.role !== "ADMIN") redirect(`/courses/${slug}`);
+  if (!chapter.isPublished && user.role !== "ADMIN") redirect(`/courses/${slug}`);
+
+  const course = {
+    ...detail.course.toJSON(),
+  };
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-8">
