@@ -2,6 +2,8 @@
 
 Sistema completo de gestión de cursos técnicos con Next.js 14, autenticación, progreso automático y dashboard administrativo.
 
+> ℹ️ **Material histórico**: Las guías de cohorts anteriores (por ejemplo, `artefacto-subdominios`, `assignments-fullstack`, `assignment-01-hello-api`) ahora viven en [`docs/legacy/`](docs/legacy/). Consulta esa carpeta para acceder a los manuales originales o descargarlos de forma independiente.
+
 ## 🚀 Características
 
 ### Para Administradores
