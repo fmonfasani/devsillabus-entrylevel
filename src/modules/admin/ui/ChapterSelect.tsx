@@ -1,4 +1,4 @@
-// src/components/ChapterSelect.tsx
+// src/modules/admin/ui/ChapterSelect.tsx
 'use client';
 
 import { useEffect, useState } from 'react';

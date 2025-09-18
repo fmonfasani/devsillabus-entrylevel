@@ -1,4 +1,4 @@
-// src/components/Toast.tsx
+// src/modules/admin/ui/Toast.tsx
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';

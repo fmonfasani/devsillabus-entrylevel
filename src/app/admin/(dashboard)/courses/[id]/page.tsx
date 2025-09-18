@@ -1,4 +1,4 @@
-// app/(admin)/admin/courses/[id]/page.tsx
+// app/admin/(dashboard)/courses/[id]/page.tsx
 
 import Link from 'next/link';
 import prisma from '@/lib/prisma';

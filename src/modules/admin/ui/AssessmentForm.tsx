@@ -1,4 +1,4 @@
-// src/components/AssessmentForm.tsx
+// src/modules/admin/ui/AssessmentForm.tsx
 'use client';
 
 import { useState } from 'react';

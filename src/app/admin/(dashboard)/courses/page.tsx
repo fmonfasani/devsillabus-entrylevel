@@ -1,12 +1,12 @@
-// app/(admin)/admin/courses/page.tsx
+// app/admin/(dashboard)/courses/page.tsx
 
 'use client';
 
 import { useEffect, useState } from 'react';
-import CourseCardAdmin, { CourseSummary } from '@/components/CourseCardAdmin';
-import CreateCourseModal from '@/components/CreateCourseModal';
-import { ToastProvider } from '@/components/Toast';
-import { useToast } from '@/components/Toast';
+import CourseCardAdmin, { CourseSummary } from '@/modules/admin/ui/CourseCardAdmin';
+import CreateCourseModal from '@/modules/admin/ui/CreateCourseModal';
+import { ToastProvider } from '@/modules/admin/ui/Toast';
+import { useToast } from '@/modules/admin/ui/Toast';
 import EmptyState from '@/components/EmptyState';
 
 export default function CoursesPage() {
