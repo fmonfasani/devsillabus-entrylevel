@@ -1,12 +1,13 @@
 // app/(student)/dashboard/page.tsx
 import { auth } from '@/auth';
-import { listMyEnrollments } from '@/lib/courseService';
+import { makeListUserEnrollments } from '@/modules/enrollment/factories';
 import Link from 'next/link';
 
 export default async function StudentDashboard() {
   const session = await auth();
   if (!session?.user?.id) return <div className="p-6">No autenticado</div>;
-  const enrollments = await listMyEnrollments(Number(session.user.id));
+  const listUserEnrollments = makeListUserEnrollments();
+  const enrollments = await listUserEnrollments.execute(Number(session.user.id));
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">Mis Cursos</h1>
