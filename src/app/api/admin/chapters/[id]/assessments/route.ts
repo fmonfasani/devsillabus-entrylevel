@@ -3,8 +3,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 
-import { addAssessment } from '@/lib/adminService';
 import { assessmentCreateSchema } from '@/schemas/admin';
+import { makeAddAssessment } from '@/modules/chapter/factories';
 
 export async function POST(
   req: Request,
@@ -22,6 +22,7 @@ export async function POST(
     return NextResponse.json({ errors: parsed.error.flatten().fieldErrors }, { status: 400 });
   }
   const chapterId = Number(params.id);
-  const assessment = await addAssessment(chapterId, parsed.data);
+  const addAssessmentUseCase = makeAddAssessment();
+  const assessment = await addAssessmentUseCase.execute(chapterId, parsed.data);
   return NextResponse.json(assessment, { status: 201 });
 }

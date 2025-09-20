@@ -1,7 +1,7 @@
 // app/admin/(dashboard)/courses/[id]/page.tsx
 
 import Link from 'next/link';
-import prisma from '@/lib/prisma';
+import { makeGetAdminCourseDetail } from '@/modules/course/factories';
 
 interface PageProps {
   params: { id: string };
@@ -9,14 +9,17 @@ interface PageProps {
 
 export default async function CourseDetailPage({ params }: PageProps) {
   const courseId = Number(params.id);
-  const course = await prisma.course.findUnique({
-    where: { id: courseId },
-    include: { chapters: { include: { resources: true, assessments: true } } },
-  });
+  const getCourseDetail = makeGetAdminCourseDetail();
+  const detail = await getCourseDetail.execute(courseId);
 
-  if (!course) {
+  if (!detail) {
     return <div className="p-6">Curso no encontrado</div>;
   }
+
+  const course = {
+    ...detail.course.toJSON(),
+    chapters: detail.chapters,
+  };
 
   const chaptersCount = course.chapters.length;
   const resourcesCount = course.chapters.reduce(
