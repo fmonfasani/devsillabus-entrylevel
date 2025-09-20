@@ -1,0 +1,188 @@
+version: "3.9"
+
+services:
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.devresolver.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.devresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.devresolver.acme.tlschallenge=true"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik:/etc/traefik
+      - traefik-letsencrypt:/letsencrypt
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_HOST}`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=devresolver"
+    networks:
+      - saas
+
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    command: pnpm turbo run dev --filter web
+    env_file:
+      - ./env/apps-web.env.example
+    volumes:
+      - ..:/workspace:cached
+      - /workspace/node_modules
+    working_dir: /workspace
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=Host(`${WEB_HOST}`)"
+      - "traefik.http.routers.web.entrypoints=web"
+      - "traefik.http.services.web.loadbalancer.server.port=3000"
+    depends_on:
+      - api
+      - db
+      - redis
+      - meilisearch
+    networks:
+      - saas
+
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    command: pnpm turbo run dev --filter api
+    env_file:
+      - ./env/apps-api.env.example
+    volumes:
+      - ..:/workspace:cached
+      - /workspace/node_modules
+    working_dir: /workspace
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`${API_HOST}`)"
+      - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.services.api.loadbalancer.server.port=3333"
+    depends_on:
+      - db
+      - redis
+    networks:
+      - saas
+
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./env/database.env.example
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - saas
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --save "" --appendonly no
+    ports:
+      - "6379:6379"
+    env_file:
+      - ./env/redis.env.example
+    networks:
+      - saas
+
+  bullboard:
+    image: ghcr.io/felixmosh/bull-board:latest
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bullboard.rule=Host(`${BULL_HOST}`)"
+      - "traefik.http.routers.bullboard.entrypoints=web"
+      - "traefik.http.services.bullboard.loadbalancer.server.port=3000"
+    depends_on:
+      - redis
+    networks:
+      - saas
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.6
+    env_file:
+      - ./env/meilisearch.env.example
+    ports:
+      - "7700:7700"
+    volumes:
+      - meili-data:/meili_data
+    networks:
+      - saas
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.89.0
+    command: ["--config=/etc/otel-collector.yaml"]
+    volumes:
+      - ./observability/otel-collector.yaml:/etc/otel-collector.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    networks:
+      - saas
+
+  loki:
+    image: grafana/loki:2.9.3
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    volumes:
+      - ./observability/loki-config.yaml:/etc/loki/local-config.yaml:ro
+    ports:
+      - "3100:3100"
+    networks:
+      - saas
+
+  promtail:
+    image: grafana/promtail:2.9.3
+    command: ["--config.file=/etc/promtail/config.yaml"]
+    volumes:
+      - ./observability/promtail-config.yaml:/etc/promtail/config.yaml:ro
+      - /var/log:/var/log:ro
+    networks:
+      - saas
+
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    networks:
+      - saas
+
+  grafana:
+    image: grafana/grafana:10.2.2
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./observability/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+      - ./observability/grafana-dashboards:/var/lib/grafana/dashboards
+    ports:
+      - "3001:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`${GRAFANA_HOST}`)"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls.certresolver=devresolver"
+    networks:
+      - saas
+
+volumes:
+  postgres-data:
+  traefik-letsencrypt:
+  meili-data:
+
+networks:
+  saas:
+    driver: bridge

@@ -1,0 +1,43 @@
+image:
+  repository: ghcr.io/your-org/saas/api
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3333
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: api.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - api.example.com
+      secretName: api-tls
+
+env:
+  NODE_ENV: production
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+  DATABASE_URL: ${DATABASE_URL}
+  REDIS_URL: ${REDIS_URL}
+  STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+  MERCADOPAGO_ACCESS_TOKEN: ${MERCADOPAGO_ACCESS_TOKEN}
+
+resources:
+  requests:
+    cpu: 150m
+    memory: 256Mi
+  limits:
+    cpu: 1
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 65

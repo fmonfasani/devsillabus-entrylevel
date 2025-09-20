@@ -1,0 +1,5 @@
+apiVersion: v2
+name: saas-web
+version: 0.1.0
+appVersion: "1.0.0"
+description: Chart base para la app Next.js web

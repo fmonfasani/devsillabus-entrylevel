@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  web:
+    command: pnpm turbo run start --filter web
+    environment:
+      - NEXT_PUBLIC_APP_URL=https://${WEB_HOST}
+      - NODE_ENV=production
+    labels:
+      - "traefik.http.routers.web.entrypoints=websecure"
+      - "traefik.http.routers.web.tls.certresolver=devresolver"
+
+  api:
+    command: node dist/main.js
+    environment:
+      - NODE_ENV=production
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    labels:
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=devresolver"
+
+  db:
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+
+  grafana:
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-changeMe!}
+    labels:
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls.certresolver=devresolver"
+
+  traefik:
+    command:
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--certificatesresolvers.devresolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.devresolver.acme.dnschallenge.provider=cloudflare"
+    environment:
+      - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+    volumes:
+      - ./traefik/acme.json:/letsencrypt/acme.json

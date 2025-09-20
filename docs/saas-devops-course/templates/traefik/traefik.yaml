@@ -1,0 +1,31 @@
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: devresolver
+providers:
+  kubernetesCRD: {}
+  kubernetesIngress: {}
+certificatesResolvers:
+  devresolver:
+    acme:
+      email: ${ACME_EMAIL}
+      storage: /letsencrypt/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        delayBeforeCheck: 0
+middlewares:
+  security-headers:
+    headers:
+      frameDeny: true
+      contentTypeNosniff: true
+      browserXssFilter: true
+      forceSTSHeader: true
+      stsSeconds: 63072000
+      stsIncludeSubdomains: true
+      stsPreload: true
+      contentSecurityPolicy: "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.example.com https://app.posthog.com;"
+      referrerPolicy: "strict-origin"
