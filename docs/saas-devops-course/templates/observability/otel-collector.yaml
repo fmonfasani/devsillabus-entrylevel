@@ -1,0 +1,34 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+exporters:
+  logging:
+    loglevel: warn
+  otlphttp/sentry:
+    endpoint: https://o447951.ingest.sentry.io
+    headers:
+      Authorization: Bearer ${SENTRY_AUTH_TOKEN}
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+  prometheusremotewrite:
+    endpoint: http://prometheus:9090/api/v1/write
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, otlphttp/sentry]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, prometheusremotewrite]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, loki]

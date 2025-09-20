@@ -1,0 +1,71 @@
+{
+  "id": null,
+  "title": "SaaS Overview",
+  "tags": ["saas", "devops"],
+  "timezone": "browser",
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "30s",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "API Latency P95",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{service='api'}[5m])) by (le))"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "API Error Rate",
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{status=~'5..',service='api'}[5m])) / sum(rate(http_server_requests_seconds_count{service='api'}[5m]))"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "type": "stat",
+      "title": "Active Tenants",
+      "targets": [
+        {
+          "expr": "sum(postgres_table_rows{table='organizations'})"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 8, "w": 6, "h": 6 }
+    },
+    {
+      "type": "stat",
+      "title": "Queue Backlog",
+      "targets": [
+        {
+          "expr": "sum(redis_queue_jobs{queue='emailQueue'})"
+        }
+      ],
+      "gridPos": { "x": 6, "y": 8, "w": 6, "h": 6 }
+    },
+    {
+      "type": "stat",
+      "title": "Billing Failures (24h)",
+      "targets": [
+        {
+          "expr": "sum(increase(payment_events_total{status='failed'}[24h]))"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 8, "w": 6, "h": 6 }
+    },
+    {
+      "type": "stat",
+      "title": "Feature Usage",
+      "targets": [
+        {
+          "expr": "sum(increase(posthog_events_total{event='feature_used'}[24h]))"
+        }
+      ],
+      "gridPos": { "x": 18, "y": 8, "w": 6, "h": 6 }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: stripe-credentials
+  namespace: saas
+data:
+  STRIPE_SECRET_KEY: ENC[AES256_GCM,data:...,iv:...,tag:...,type:str]
+sops:
+  kms: []
+  gcp_kms: []
+  azure_kv: []
+  hc_vault: []
+  age:
+    - recipient: age1examplekeyxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  encrypted_regex: '^(data|stringData)$'
+  version: 3.8.1
