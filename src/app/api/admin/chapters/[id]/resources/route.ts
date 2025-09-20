@@ -3,9 +3,9 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 
-import { addChapterResource } from '@/lib/adminService';
 import { resourceCreateSchema } from '@/schemas/admin';
 import { z } from 'zod';
+import { makeAddChapterResource } from '@/modules/chapter/factories';
 export async function POST(
   req: Request,
   { params }: { params: { id: string } }
@@ -29,7 +29,8 @@ export async function POST(
     return NextResponse.json({ errors: parsed.error.flatten().fieldErrors }, { status: 400 });
   }
   const chapterId = Number(params.id);
-  const resource = await addChapterResource(chapterId, parsed.data);
+  const addChapterResourceUseCase = makeAddChapterResource();
+  const resource = await addChapterResourceUseCase.execute(chapterId, parsed.data);
   return NextResponse.json(resource, { status: 201 });
 
 }

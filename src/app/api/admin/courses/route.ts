@@ -1,8 +1,9 @@
 // app/api/admin/courses/route.ts
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
-import { createCourse, createChaptersRange } from '@/lib/adminService';
 import { courseCreateSchema } from '@/schemas/admin';
+import { makeCreateCourse } from '@/modules/course/factories';
+import { makeCreateChaptersRange } from '@/modules/chapter/factories';
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -17,11 +18,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ errors: parsed.error.flatten().fieldErrors }, { status: 400 });
   }
   const { initWeeks, ...data } = parsed.data;
-  const course = await createCourse(data);
-  if (initWeeks) {
-    await createChaptersRange(course.id);
+  const createCourseUseCase = makeCreateCourse();
+  const createChaptersRangeUseCase = makeCreateChaptersRange();
 
+  const course = await createCourseUseCase.execute(data);
+  if (initWeeks) {
+    await createChaptersRangeUseCase.execute(course.id!, 0, 10);
   }
-  return NextResponse.json(course, { status: 201 });
+  return NextResponse.json(course.toJSON(), { status: 201 });
 }
 

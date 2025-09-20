@@ -1,28 +1,31 @@
 // app/courses/[slug]/page.tsx
-import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { makeFindUserByEmail, makeGetEnrollment } from "@/modules/enrollment/factories";
+import { makeGetCourseDetail } from "@/modules/course/factories";
 
 export default async function CoursePage({ params: { slug } }: { params: { slug: string } }) {
   const session = await auth();
   if (!session?.user?.email) redirect("/login");
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    select: { id: true, role: true },
-  });
+  const findUserByEmail = makeFindUserByEmail();
+  const getCourseDetail = makeGetCourseDetail();
+  const getEnrollment = makeGetEnrollment();
 
-  const course = await prisma.course.findUnique({
-    where: { slug },
-    include: { chapters: { orderBy: { weekNumber: "asc" } } },
-  });
-  if (!course) return notFound();
+  const user = await findUserByEmail.execute(session.user.email);
+  if (!user) redirect("/login");
 
-  const enrolled = await prisma.enrollment.findUnique({
-    where: { userId_courseId: { userId: user!.id, courseId: course.id } },
-  });
-  if (user?.role !== "ADMIN" && !enrolled) redirect("/dashboard");
+  const detail = await getCourseDetail.execute(slug);
+  if (!detail) return notFound();
+
+  const enrollment = await getEnrollment.execute(user.id, detail.course.id!);
+  if (user.role !== "ADMIN" && !enrollment) redirect("/dashboard");
+
+  const course = {
+    ...detail.course.toJSON(),
+    chapters: detail.chapters,
+  };
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-8">
