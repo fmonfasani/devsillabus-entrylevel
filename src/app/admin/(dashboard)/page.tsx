@@ -1,14 +1,14 @@
-// app/(admin)/admin/page.tsx
+// app/admin/(dashboard)/page.tsx
 
 'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CourseLevel, CourseType } from '@prisma/client';
-import ChapterSelect from '@/components/ChapterSelect';
-import ResourceForm from '@/components/ResourceForm';
-import AssessmentForm from '@/components/AssessmentForm';
-import { ToastProvider, useToast } from '@/components/Toast';
+import ChapterSelect from '@/modules/admin/ui/ChapterSelect';
+import ResourceForm from '@/modules/admin/ui/ResourceForm';
+import AssessmentForm from '@/modules/admin/ui/AssessmentForm';
+import { ToastProvider, useToast } from '@/modules/admin/ui/Toast';
 
 interface Course {
   id: number;

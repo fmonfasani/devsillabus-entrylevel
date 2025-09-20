@@ -1,4 +1,4 @@
-// src/components/YouTubeVideoInput.tsx
+// src/modules/admin/ui/YouTubeVideoInput.tsx
 'use client';
 
 import { useEffect, useState } from 'react';

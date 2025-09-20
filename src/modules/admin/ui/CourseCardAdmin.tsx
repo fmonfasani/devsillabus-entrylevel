@@ -1,4 +1,4 @@
-// src/components/CourseCardAdmin.tsx
+// src/modules/admin/ui/CourseCardAdmin.tsx
 import Link from 'next/link';
 import { CourseLevel, CourseType } from '@prisma/client';
 

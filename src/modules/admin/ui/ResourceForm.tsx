@@ -1,4 +1,4 @@
-// src/components/ResourceForm.tsx
+// src/modules/admin/ui/ResourceForm.tsx
 'use client';
 
 import { useState } from 'react';

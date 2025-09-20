@@ -1,12 +1,12 @@
-// app/(admin)/admin/courses/[id]/chapters/page.tsx
+// app/admin/(dashboard)/courses/[id]/chapters/page.tsx
 
 'use client';
 
 import { useEffect, useState } from 'react';
 import { AssessmentType, ResourceType } from '@prisma/client';
-import ResourceForm from '@/components/ResourceForm';
-import AssessmentForm from '@/components/AssessmentForm';
-import { ToastProvider, useToast } from '@/components/Toast';
+import ResourceForm from '@/modules/admin/ui/ResourceForm';
+import AssessmentForm from '@/modules/admin/ui/AssessmentForm';
+import { ToastProvider, useToast } from '@/modules/admin/ui/Toast';
 import EmptyState from '@/components/EmptyState';
 
 interface PageProps {
