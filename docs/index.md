@@ -21,9 +21,10 @@ Bienvenido al hub central de la cohorte. Aquí concentramos el plan maestro, los
 
 
 ### DevOps & Automatización
+## AI Automation
 
-
-- [DEVOPS · N0 Entry · Docker 101](/devops/n0-entry/)
-- [DEVOPS · N1 Core · Monitorización y Observabilidad](/devops/n1-core/)
-- [DEVOPS · N2 Pro · Automatizaciones con n8n](/devops/n2-pro/)
-- [DEVOPS · N3 Expert · Incident Response](/devops/n3-expert/)
+- [N0 · Entry — OpenAI API Foundations](/ai/n0-entry/)
+- [N1 · Core — LangChain RAG](/ai/n1-core/)
+- [N2 · Pro — Offline Evaluation](/ai/n2-pro/)
+- [N3 · Expert — Multi-Agent Orchestration](/ai/n3-expert/)
+- [Especialidad · AI Automation](/ai/index/)

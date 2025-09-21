@@ -1,0 +1,19 @@
+{
+  "title": "RAG Quality",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Latency (p95)",
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum(rate(rag_response_latency_bucket[5m])) by (le))" }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Answer Accuracy",
+      "targets": [
+        { "expr": "avg(rag_offline_eval_accuracy)" }
+      ]
+    }
+  ]
+}
