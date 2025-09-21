@@ -30,3 +30,11 @@ nav_order: 0
 - [DEVOPS · Título del nivel](/devops/l3-advanced/)
 - [DEVOPS · Título del nivel](/devops/l4-pro/)
 
+## AI Automation
+
+- [N0 · Entry — OpenAI API Foundations](/ai/n0-entry/)
+- [N1 · Core — LangChain RAG](/ai/n1-core/)
+- [N2 · Pro — Offline Evaluation](/ai/n2-pro/)
+- [N3 · Expert — Multi-Agent Orchestration](/ai/n3-expert/)
+- [Especialidad · AI Automation](/ai/index/)
+

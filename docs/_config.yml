@@ -16,6 +16,9 @@ collections:
   devops:
     output: true
     permalink: /devops/:name/
+  ai:
+    output: true
+    permalink: /ai/:name/
 
 just_the_docs:
   search_enabled: true
