@@ -2,7 +2,7 @@
 
 Sistema completo de gestión de cursos técnicos con Next.js 14, autenticación, progreso automático y dashboard administrativo.
 
-> ℹ️ **Material histórico**: Las guías de cohorts anteriores (por ejemplo, `artefacto-subdominios`, `assignments-fullstack`, `assignment-01-hello-api`) ahora viven en [`docs/legacy/`](docs/legacy/). Consulta esa carpeta para acceder a los manuales originales o descargarlos de forma independiente.
+> ℹ️ **Material histórico**: Las guías de cohorts anteriores (por ejemplo, `artefacto-subdominios`, `assignments-fullstack`, `assignment-01-hello-api`) están consolidadas en la sección [Material histórico](docs/legacy/). Usa esa navegación para acceder a manuales originales, referencias o descargas independientes.
 
 > 🧠 **Prompt maestro Dodex**: Consulta y actualiza el prompt estructurado para planificación académica en [`docs/prompts/dodex-plan-maestro.md`](docs/prompts/dodex-plan-maestro.md). Mantén la nomenclatura de Material histórico al documentar versiones previas.
 
@@ -31,17 +31,39 @@ Sistema completo de gestión de cursos técnicos con Next.js 14, autenticación,
 - **TypeScript** para type safety
 - **Sistema de roles** (Admin/Instructor/Student)
 
-## 📋 Tipos de Cursos Soportados
+## 📋 Roadmap de Formación
 
-### Por Especialidad
-- **Full Stack**: JavaScript, Node.js, React, bases de datos
-- **DevOps**: Docker, Kubernetes, CI/CD, cloud
+### Especialidades Objetivo
+- **Full-stack app profesional**: Desarrollo end-to-end con foco en experiencias de usuario ricas, servicios escalables y prácticas de ingeniería modernas.
+- **Integración de IA práctica**: Construcción de features asistidas por IA, agentes y automatizaciones productivas con modelos alojados o de terceros.
+- **DevOps y automatización avanzada**: Infraestructura declarativa, observabilidad, flujos GitOps y gobernanza de plataformas.
 
-### Por Nivel
-- **Entry Level**: 12 semanas, fundamentos
-- **Bootcamp**: 16 semanas, intensivo
-- **Mid Level**: 14 semanas, intermedio
-- **Senior**: 18+ semanas, avanzado
+### Niveles de Dominio
+- **Nivel 0 · Entry**: Onboarding, setup integral y fundamentos de flujo de trabajo.
+- **Nivel 1 · Core**: Construcción de MVPs robustos con prácticas de colaboración y control de calidad.
+- **Nivel 2 · Pro**: Escalamiento de producto, seguridad, observabilidad y automatización de despliegues.
+- **Nivel 3 · Expert/Capstone**: Ejecución de retos integrales multi-equipo, auditoría, optimización continua y transferencia a operación.
+
+### Artefactos Clave
+- **Playbooks de arquitectura** (`docs/collections/_fullstack/`, `docs/collections/_devops/`): Contienen narrativa de dominio, hitos por semana y decisiones técnicas por nivel.
+- **Plantillas de proyectos** (`course-site-starter/`, `src/`): Boilerplates de aplicaciones y servicios listos para ser forkeados en cada especialidad.
+- **Guías de experimentos** (`docs/saas-devops-course/`, `docs/videos/`): Demos, labs guiados y charlas que acompañan a los capítulos prioritarios.
+
+### Rúbricas de Evaluación
+- **Framework Core Skills**: Checklists de habilidades técnicas, colaboración y entrega continua embebidas en cada capítulo de `docs/collections/_fullstack/`.
+- **Rúbrica DevOps/IA**: Criterios de integración, confiabilidad y automatización documentados en `docs/saas-devops-course/course.md` y anexos asociados.
+- **Matrices de madurez**: Tablas de progresión por nivel referenciadas desde `docs/index.md` para orientar feedback incremental.
+
+### Automatizaciones CI/CD
+- **Pipelines de validación** (`scripts/import-docs-from-folder.ts`, `scripts/seed-quick.ts`) para sincronizar contenidos y generar datos de prueba antes de cada release.
+- **Workflows de despliegue** configurables vía `package.json` (scripts `lint`, `test`, `deploy`) y `middleware.ts` para gates de acceso y previsualizaciones.
+- **Infraestructura como código** ejemplificada en `prisma/` (modelado de base) y configuraciones compartidas (`tailwind.config.ts`, `tsconfig.json`) reutilizables mediante `npm run setup`.
+
+### Backlog Inmediato
+- **Nivel 0**: Refinar tutorial de provisioning local y checklists de acceso a repositorios.
+- **Nivel 1**: Incorporar feature flags en el starter y automatizar seed de datos realistas.
+- **Nivel 2**: Añadir observabilidad distribuida (traces + métricas) y alertas basadas en SLOs.
+- **Nivel 3**: Definir desafío Capstone 2024 con enfoque multi-especialidad y entregables auditables.
 
 ## 🛠 Instalación Rápida
 
