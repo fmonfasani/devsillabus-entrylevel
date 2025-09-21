@@ -5,11 +5,9 @@ nav_order: 0
 # Plan maestro DevSyllabus (Entry Level)
 
 
-**Accesos rápidos:** [Mi primera web](/public/) · [N0 Entry](/fullstack/n0-entry/) · [N1 Core](/fullstack/n1-core/) · [N2 Pro](/fullstack/n2-pro/)
-
+> 📦 ¿Buscas documentación antigua? Reunimos el material histórico en la sección [Material histórico](/legacy/).
 
 Bienvenido al hub central de la cohorte. Aquí concentramos el plan maestro, los enlaces a cada especialidad y los artefactos operativos necesarios para avanzar nivel por nivel.
-
 
 ## Full-Stack
 
