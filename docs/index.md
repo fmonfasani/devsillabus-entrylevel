@@ -1,32 +1,46 @@
 ---
-title: Dev • DevOps • English — Entry Level
+title: Plan maestro DevSyllabus — Entry Level
 nav_order: 0
 ---
-# DevSyllabus — Entry Level (Cohorte 01)
+# Plan maestro DevSyllabus (Entry Level)
 
-**Accesos rápidos:** [Mi primera web](/public/) · [Week 0](/fullstack/00-setup/) · [L1 Frontend](/fullstack/01-frontend/) · [L2 DOM](/fullstack/02-dom/)
+El plan maestro de DevSyllabus está organizado en cuatro hitos que estructuran el progreso desde los fundamentos hasta la especialización profesional:
 
-> 📦 ¿Buscas documentación antigua? Reunimos los artefactos legacy en la sección [Material histórico](/legacy/).
+- **Entry**: Domina los cimientos técnicos y las prácticas esenciales de trabajo colaborativo.
+- **Core**: Amplía tu autonomía desarrollando proyectos con profundidad y buenas prácticas.
+- **Pro**: Consolida tu capacidad para liderar entregables complejos y gestionar calidad extremo a extremo.
+- **Expert**: Itera con enfoque estratégico, optimiza procesos y guía a otros hacia la excelencia.
 
+Cada hito se apoya en tres especialidades —Full-stack, Integración de IA y DevOps & Automatización— que te permiten adaptar tu ruta de aprendizaje según tus objetivos profesionales.
 
-## Full-Stack
+> 📦 ¿Buscas documentación antigua? Reunimos los artefactos de Material histórico en la sección [Material histórico](/legacy/).
 
-- [Week 0: Setup & Your First Website](/fullstack/00-onboarding/)
-- [Week 1 — Setup & Your First Website ](/fullstack/01-setup/)
-- [Week 2: Fundamentals](/fullstack/02-fundamentals/)
-- [Week 3: DOM, eventos, accesibilidad y errores](/fullstack/03-dom/)
-- [Week 2: Scratch: publicar tu primera web](/fullstack/00-scratch/)
-- [Week 3: Frontend](/fullstack/01-frontend/)
-- [PLACEHOLDER — Full Stack](/fullstack/03-mid1/)
-- [PLACEHOLDER — Full Stack](/fullstack/04-mid2/)
-- [Full Stack](/fullstack/index/)
+## Especialidades y rutas por nivel
 
+### Full-stack
 
-## DevOps
+Construye productos web completos desde la ideación hasta el despliegue, integrando frontend, backend y experiencia de usuario.
 
-- [DEVOPS · Título del nivel](/devops/l0-scratch/)
-- [DEVOPS · Título del nivel](/devops/l1-starter/)
-- [DEVOPS · Título del nivel](/devops/l2-builder/)
-- [DEVOPS · Título del nivel](/devops/l3-advanced/)
-- [DEVOPS · Título del nivel](/devops/l4-pro/)
+- [N0 — Fundamentos web y flujo de trabajo](/fullstack/n0/)
+- [N1 — Frontend interactivo y accesible](/fullstack/n1/)
+- [N2 — Backend, bases de datos y APIs](/fullstack/n2/)
+- [N3 — Arquitecturas escalables y producto completo](/fullstack/n3/)
+
+### Integración de IA
+
+Aprende a combinar modelos de inteligencia artificial con aplicaciones existentes para crear experiencias asistidas y automatizadas.
+
+- [N0 — Fundamentos de IA aplicada](/ai-integration/n0/)
+- [N1 — Automatización con asistentes y agentes](/ai-integration/n1/)
+- [N2 — Integración de servicios y evaluación](/ai-integration/n2/)
+- [N3 — Sistemas de IA compuestos y responsabilidad](/ai-integration/n3/)
+
+### DevOps & Automatización
+
+Optimiza la entrega continua mediante infraestructura reproducible, observabilidad y automatización de operaciones.
+
+- [N0 — Fundamentos de entornos y despliegue](/devops-automation/n0/)
+- [N1 — Pipelines y gestión de configuraciones](/devops-automation/n1/)
+- [N2 — Observabilidad y fiabilidad](/devops-automation/n2/)
+- [N3 — Plataformas internas y automatización avanzada](/devops-automation/n3/)
 
