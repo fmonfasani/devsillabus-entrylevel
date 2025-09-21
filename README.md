@@ -4,6 +4,8 @@ Sistema completo de gestión de cursos técnicos con Next.js 14, autenticación,
 
 > ℹ️ **Material histórico**: Las guías de cohorts anteriores (por ejemplo, `artefacto-subdominios`, `assignments-fullstack`, `assignment-01-hello-api`) ahora viven en [`docs/legacy/`](docs/legacy/). Consulta esa carpeta para acceder a los manuales originales o descargarlos de forma independiente.
 
+> 🧠 **Prompt maestro Dodex**: Consulta y actualiza el prompt estructurado para planificación académica en [`docs/prompts/dodex-plan-maestro.md`](docs/prompts/dodex-plan-maestro.md). Mantén la nomenclatura de Material histórico al documentar versiones previas.
+
 ## 🚀 Características
 
 ### Para Administradores
