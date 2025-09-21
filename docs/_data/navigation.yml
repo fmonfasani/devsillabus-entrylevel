@@ -3,16 +3,14 @@
   children:
     - title: Full Stack
       children:
-        - title: L0 · Scratch
-          url: /fullstack/00-scratch/
-        - title: L1 · Fundamentos
-          url: /fullstack/01-fundamentos/
-        - title: L2 · DOM
-          url: /fullstack/02-dom/
-        - title: L3 · Mid 1
-          url: /fullstack/03-mid1/
-        - title: L4 · Mid 2
-          url: /fullstack/04-mid2/
+        - title: N0 · Entry
+          url: /fullstack/n0-entry/
+        - title: N1 · Core
+          url: /fullstack/n1-core/
+        - title: N2 · Pro
+          url: /fullstack/n2-pro/
+        - title: N3 · Capstone
+          url: /fullstack/n3-capstone/
     - title: DevOps
       children:
         - title: L0 · Scratch
