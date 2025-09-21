@@ -23,8 +23,7 @@ Bienvenido al hub central de la cohorte. Aquí concentramos el plan maestro, los
 ### DevOps & Automatización
 
 
-- [DEVOPS · Título del nivel](/devops/l0-scratch/)
-- [DEVOPS · Título del nivel](/devops/l1-starter/)
-- [DEVOPS · Título del nivel](/devops/l2-builder/)
-- [DEVOPS · Título del nivel](/devops/l3-advanced/)
-- [DEVOPS · Título del nivel](/devops/l4-pro/)
+- [DEVOPS · N0 Entry · Docker 101](/devops/n0-entry/)
+- [DEVOPS · N1 Core · Monitorización y Observabilidad](/devops/n1-core/)
+- [DEVOPS · N2 Pro · Automatizaciones con n8n](/devops/n2-pro/)
+- [DEVOPS · N3 Expert · Incident Response](/devops/n3-expert/)
