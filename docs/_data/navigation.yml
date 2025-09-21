@@ -1,6 +1,9 @@
 # docs/_data/navigation.yml
-- title: Dev · DevOps · English Entry Level
+- title: Plan maestro
+  url: /#plan-maestro
+- title: Full-stack
   children:
+
     - title: Full Stack
       children:
         - title: N0 · Entry
@@ -35,3 +38,4 @@
       url: /public/
     - title: Material legacy
       url: /legacy/
+

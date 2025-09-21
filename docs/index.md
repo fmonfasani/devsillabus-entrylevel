@@ -1,12 +1,15 @@
 ---
-title: Dev • DevOps • English — Entry Level
+title: Plan maestro DevSyllabus — Entry Level
 nav_order: 0
 ---
-# DevSyllabus — Entry Level (Cohorte 01)
+# Plan maestro DevSyllabus (Entry Level)
+
 
 **Accesos rápidos:** [Mi primera web](/public/) · [N0 Entry](/fullstack/n0-entry/) · [N1 Core](/fullstack/n1-core/) · [N2 Pro](/fullstack/n2-pro/)
 
-> 📦 ¿Buscas documentación antigua? Reunimos los artefactos legacy en la sección [Material histórico](/legacy/).
+
+Bienvenido al hub central de la cohorte. Aquí concentramos el plan maestro, los enlaces a cada especialidad y los artefactos operativos necesarios para avanzar nivel por nivel.
+
 
 ## Full-Stack
 
@@ -16,7 +19,9 @@ nav_order: 0
 - [N2 · Pro — MVP CRUD](/fullstack/n2-pro/)
 - [N3 · Capstone — Producto listo para producción](/fullstack/n3-capstone/)
 
-## DevOps
+
+### DevOps & Automatización
+
 
 - [DEVOPS · Título del nivel](/devops/l0-scratch/)
 - [DEVOPS · Título del nivel](/devops/l1-starter/)
