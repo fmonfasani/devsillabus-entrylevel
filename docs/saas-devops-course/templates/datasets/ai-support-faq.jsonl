@@ -1,0 +1,3 @@
+{"question": "How do I reset my password?", "answer": "Use the reset link on /auth/reset and confirm via email."}
+{"question": "What models are available in the API?", "answer": "We expose gpt-4o, gpt-4o-mini and text-embedding-3-large via /v1/chat and /v1/embeddings."}
+{"question": "Where can I see my usage?", "answer": "Open the billing dashboard under Settings → Usage to review daily costs."}
