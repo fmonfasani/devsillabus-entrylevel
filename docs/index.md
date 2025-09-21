@@ -6,7 +6,7 @@ nav_order: 0
 
 **Accesos rápidos:** [Mi primera web](/public/) · [Week 0](/fullstack/00-setup/) · [L1 Frontend](/fullstack/01-frontend/) · [L2 DOM](/fullstack/02-dom/)
 
-> 📦 ¿Buscas documentación antigua? Reunimos los artefactos legacy en la sección [Material histórico](/legacy/).
+> 📦 ¿Buscas documentación antigua? Reunimos el material histórico en la sección [Material histórico](/legacy/).
 
 
 ## Full-Stack
