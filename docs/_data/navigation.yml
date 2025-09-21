@@ -3,47 +3,39 @@
   url: /#plan-maestro
 - title: Full-stack
   children:
-    - title: N0 · Entry
-      url: /#full-stack-n0-entry
-    - title: N1 · Core
-      url: /#full-stack-n1-core
-    - title: N2 · Pro
-      url: /#full-stack-n2-pro
-    - title: N3 · Expert
-      url: /#full-stack-n3-expert
-- title: Integración de IA
-  children:
-    - title: N0 · Entry
-      url: /#integracion-ia-n0-entry
-    - title: N1 · Core
-      url: /#integracion-ia-n1-core
-    - title: N2 · Pro
-      url: /#integracion-ia-n2-pro
-    - title: N3 · Expert
-      url: /#integracion-ia-n3-expert
-- title: DevOps & Automatización
-  children:
-    - title: N0 · Entry
-      url: /#devops-n0-entry
-    - title: N1 · Core
-      url: /#devops-n1-core
-    - title: N2 · Pro
-      url: /#devops-n2-pro
-    - title: N3 · Expert
-      url: /#devops-n3-expert
-- title: Plantillas
-  url: /#plantillas
-- title: Runbooks / Postmortems
-  url: /#runbooks
-- title: Quizzes (H5P)
-  children:
-    - title: FS-00
-      url: /h5p/fs-00-quiz/
-    - title: FS-01
-      url: /h5p/fs-01-quiz/
-    - title: FS-02
-      url: /h5p/fs-02-quiz/
-- title: Mi primera web
-  url: /public/
-- title: Material histórico
-  url: /legacy/
+
+    - title: Full Stack
+      children:
+        - title: N0 · Entry
+          url: /fullstack/n0-entry/
+        - title: N1 · Core
+          url: /fullstack/n1-core/
+        - title: N2 · Pro
+          url: /fullstack/n2-pro/
+        - title: N3 · Capstone
+          url: /fullstack/n3-capstone/
+    - title: DevOps
+      children:
+        - title: L0 · Scratch
+          url: /devops/l0-scratch/
+        - title: L1 · Starter
+          url: /devops/l1-starter/
+        - title: L2 · Builder
+          url: /devops/l2-builder/
+        - title: L3 · Advanced
+          url: /devops/l3-advanced/
+        - title: L4 · Pro
+          url: /devops/l4-pro/
+    - title: Quizzes (H5P)
+      children:
+        - title: FS-00
+          url: /h5p/fs-00-quiz/
+        - title: FS-01
+          url: /h5p/fs-01-quiz/
+        - title: FS-02
+          url: /h5p/fs-02-quiz/
+    - title: Mi primera web
+      url: /public/
+    - title: Material legacy
+      url: /legacy/
+
