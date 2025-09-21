@@ -15,16 +15,14 @@
           url: /fullstack/04-mid2/
     - title: DevOps
       children:
-        - title: L0 · Scratch
-          url: /devops/l0-scratch/
-        - title: L1 · Starter
-          url: /devops/l1-starter/
-        - title: L2 · Builder
-          url: /devops/l2-builder/
-        - title: L3 · Advanced
-          url: /devops/l3-advanced/
-        - title: L4 · Pro
-          url: /devops/l4-pro/
+        - title: N0 · Entry · Docker 101
+          url: /devops/n0-entry/
+        - title: N1 · Core · Monitorización
+          url: /devops/n1-core/
+        - title: N2 · Pro · Automatizaciones n8n
+          url: /devops/n2-pro/
+        - title: N3 · Expert · Incident Response
+          url: /devops/n3-expert/
     - title: Quizzes (H5P)
       children:
         - title: FS-00
