@@ -18,6 +18,8 @@
       children:
         - title: N0 · Entry · Docker 101
           url: /devops/n0-entry/
+        - title: DevOps Beginner · Teoría
+          url: /devops/devops-beginner-theory/
         - title: N1 · Core · Monitorización
           url: /devops/n1-core/
         - title: N2 · Pro · Automatizaciones n8n
