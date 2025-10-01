@@ -19,6 +19,13 @@ Bienvenido al hub central de la cohorte. Aquí concentramos el plan maestro, los
 
 
 ### DevOps & Automatización
+
+- [Guía — Fundamentos DevOps para principiantes](/devops/devops-beginner-theory/)
+- [N0 · Entry — Docker 101](/devops/n0-entry/)
+- [N1 · Core — Monitorización y Observabilidad](/devops/n1-core/)
+- [N2 · Pro — Automatizaciones con n8n](/devops/n2-pro/)
+- [N3 · Expert — Incident Response](/devops/n3-expert/)
+
 ## AI Automation
 
 - [N0 · Entry — OpenAI API Foundations](/ai/n0-entry/)
